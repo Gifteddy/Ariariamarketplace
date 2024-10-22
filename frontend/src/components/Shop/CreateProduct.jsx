@@ -16,6 +16,7 @@ const CreateProduct = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [subcategory, setSubcategory] = useState(""); // New state for subcategory
   const [tags, setTags] = useState("");
   const [originalPrice, setOriginalPrice] = useState();
   const [discountPrice, setDiscountPrice] = useState();
@@ -60,6 +61,7 @@ const CreateProduct = () => {
     newForm.append("name", name);
     newForm.append("description", description);
     newForm.append("category", category);
+    newForm.append("subcategory", subcategory); // Append subcategory
     newForm.append("tags", tags);
     newForm.append("originalPrice", originalPrice);
     newForm.append("discountPrice", discountPrice);
@@ -70,6 +72,7 @@ const CreateProduct = () => {
         name,
         description,
         category,
+        subcategory, // Add subcategory to the dispatch
         tags,
         originalPrice,
         discountPrice,
@@ -81,9 +84,8 @@ const CreateProduct = () => {
   };
 
   return (
-    <div className="w-[90%] 800px:w-[50%] bg-white  shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll">
+    <div className="w-[90%] 800px:w-[50%] bg-white shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll">
       <h5 className="text-[30px] font-Poppins text-center">Create Product</h5>
-      {/* create product form */}
       <form onSubmit={handleSubmit}>
         <br />
         <div>
@@ -124,17 +126,41 @@ const CreateProduct = () => {
           <select
             className="w-full mt-2 border h-[35px] rounded-[5px]"
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => {
+              setCategory(e.target.value);
+              setSubcategory(""); // Reset subcategory when category changes
+            }}
           >
-            <option value="Choose a category">Choose a category</option>
-            {categoriesData &&
-              categoriesData.map((i) => (
-                <option value={i.title} key={i.title}>
-                  {i.title}
-                </option>
-              ))}
+            <option value="">Choose a category</option>
+            {categoriesData.map((i) => (
+              <option value={i.title} key={i.id}>
+                {i.title}
+              </option>
+            ))}
           </select>
         </div>
+        <br />
+        {category && ( // Show subcategory dropdown only if a category is selected
+          <div>
+            <label className="pb-2">
+              Subcategory <span className="text-red-500">*</span>
+            </label>
+            <select
+              className="w-full mt-2 border h-[35px] rounded-[5px]"
+              value={subcategory}
+              onChange={(e) => setSubcategory(e.target.value)}
+            >
+              <option value="">Choose a subcategory</option>
+              {categoriesData
+                .find((cat) => cat.title === category)
+                .subCategories.map((sub) => (
+                  <option value={sub.title} key={sub.id}>
+                    {sub.title}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
         <br />
         <div>
           <label className="pb-2">Tags</label>
@@ -194,7 +220,6 @@ const CreateProduct = () => {
           </label>
           <input
             type="file"
-            name=""
             id="upload"
             className="hidden"
             multiple
@@ -204,15 +229,14 @@ const CreateProduct = () => {
             <label htmlFor="upload">
               <AiOutlinePlusCircle size={30} className="mt-3" color="#555" />
             </label>
-            {images &&
-              images.map((i) => (
-                <img
-                  src={i}
-                  key={i}
-                  alt=""
-                  className="h-[120px] w-[120px] object-cover m-2"
-                />
-              ))}
+            {images.map((i) => (
+              <img
+                src={i}
+                key={i}
+                alt=""
+                className="h-[120px] w-[120px] object-cover m-2"
+              />
+            ))}
           </div>
           <br />
           <div>

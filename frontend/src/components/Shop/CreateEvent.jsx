@@ -16,6 +16,7 @@ const CreateEvent = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [subcategory, setSubcategory] = useState(""); // New state for subcategory
   const [tags, setTags] = useState("");
   const [originalPrice, setOriginalPrice] = useState();
   const [discountPrice, setDiscountPrice] = useState();
@@ -28,10 +29,7 @@ const CreateEvent = () => {
     const minEndDate = new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000);
     setStartDate(startDate);
     setEndDate(null);
-    document.getElementById("end-date").min = minEndDate.toISOString.slice(
-      0,
-      10
-    );
+    document.getElementById("end-date").min = minEndDate.toISOString().slice(0, 10);
   };
 
   const handleEndDateChange = (e) => {
@@ -40,7 +38,6 @@ const CreateEvent = () => {
   };
 
   const today = new Date().toISOString().slice(0, 10);
-
   const minEndDate = startDate
     ? new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000)
         .toISOString()
@@ -60,12 +57,10 @@ const CreateEvent = () => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-
     setImages([]);
 
     files.forEach((file) => {
       const reader = new FileReader();
-
       reader.onload = () => {
         if (reader.readyState === 2) {
           setImages((old) => [...old, reader.result]);
@@ -79,14 +74,15 @@ const CreateEvent = () => {
     e.preventDefault();
 
     const newForm = new FormData();
-
     images.forEach((image) => {
       newForm.append("images", image);
     });
+
     const data = {
       name,
       description,
       category,
+      subcategory, // Include subcategory in the data
       tags,
       originalPrice,
       discountPrice,
@@ -96,11 +92,12 @@ const CreateEvent = () => {
       start_Date: startDate?.toISOString(),
       Finish_Date: endDate?.toISOString(),
     };
+    
     dispatch(createevent(data));
   };
 
   return (
-    <div className="w-[90%] 800px:w-[50%] bg-white  shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll">
+    <div className="w-[90%] 800px:w-[50%] bg-white shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll">
       <h5 className="text-[30px] font-Poppins text-center">Create Event</h5>
       {/* create event form */}
       <form onSubmit={handleSubmit}>
@@ -143,9 +140,12 @@ const CreateEvent = () => {
           <select
             className="w-full mt-2 border h-[35px] rounded-[5px]"
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => {
+              setCategory(e.target.value);
+              setSubcategory(""); // Reset subcategory when category changes
+            }}
           >
-            <option value="Choose a category">Choose a category</option>
+            <option value="">Choose a category</option>
             {categoriesData &&
               categoriesData.map((i) => (
                 <option value={i.title} key={i.title}>
@@ -154,6 +154,26 @@ const CreateEvent = () => {
               ))}
           </select>
         </div>
+        <br />
+        {category && (
+          <div>
+            <label className="pb-2">Subcategory</label>
+            <select
+              className="w-full mt-2 border h-[35px] rounded-[5px]"
+              value={subcategory}
+              onChange={(e) => setSubcategory(e.target.value)}
+            >
+              <option value="">Choose a subcategory</option>
+              {categoriesData
+                .find((cat) => cat.title === category)
+                ?.subCategories.map((sub) => (
+                  <option value={sub.title} key={sub.title}>
+                    {sub.title}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
         <br />
         <div>
           <label className="pb-2">Tags</label>
@@ -213,7 +233,7 @@ const CreateEvent = () => {
           </label>
           <input
             type="date"
-            name="price"
+            name="start-date"
             id="start-date"
             value={startDate ? startDate.toISOString().slice(0, 10) : ""}
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -229,8 +249,8 @@ const CreateEvent = () => {
           </label>
           <input
             type="date"
-            name="price"
-            id="start-date"
+            name="end-date"
+            id="end-date"
             value={endDate ? endDate.toISOString().slice(0, 10) : ""}
             className="mt-2 appearance-none block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             onChange={handleEndDateChange}
@@ -245,7 +265,6 @@ const CreateEvent = () => {
           </label>
           <input
             type="file"
-            name=""
             id="upload"
             className="hidden"
             multiple
