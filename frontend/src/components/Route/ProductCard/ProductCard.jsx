@@ -1,26 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AiFillHeart,
   AiFillStar,
   AiOutlineEye,
   AiOutlineHeart,
   AiOutlineShoppingCart,
-  AiOutlineStar,
 } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import styles from "../../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
-import ProductDetailsCard from "../ProductDetailsCard/ProductDetailsCard";
-import {
-  addToWishlist,
-  removeFromWishlist,
-} from "../../../redux/actions/wishlist";
-import { useEffect } from "react";
+import { addToWishlist, removeFromWishlist } from "../../../redux/actions/wishlist";
 import { addTocart } from "../../../redux/actions/cart";
 import { toast } from "react-toastify";
+import ProductDetailsCard from "../ProductDetailsCard/ProductDetailsCard";
 import Ratings from "../../Products/Ratings";
+import styles from "../../../styles/styles";
 
-const ProductCard = ({ data,isEvent }) => {
+const ProductCard = ({ data, isEvent }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);
   const [click, setClick] = useState(false);
@@ -62,80 +57,94 @@ const ProductCard = ({ data,isEvent }) => {
 
   return (
     <>
-      <div className="w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">
-        <div className="flex justify-end"></div>
-        <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
+      <div
+        className="w-full h-[420px] bg-white rounded-lg shadow-lg hover:shadow-xl p-4 relative cursor-pointer transition-transform duration-300 transform hover:scale-105"
+        style={{
+          transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        }}
+      >
+        <Link
+          to={`${
+            isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`
+          }`}
+        >
           <img
             src={`${data.images && data.images[0]?.url}`}
             alt=""
-            className="w-full h-[170px] object-contain"
+            className="w-full h-[220px] object-cover rounded-t-lg mb-4 transition-all duration-300"
           />
         </Link>
+
         <Link to={`/shop/preview/${data?.shop._id}`}>
-          <h5 className={`${styles.shop_name}`}>{data.shop.name}</h5>
+          <h5 className={`${styles.shop_name} font-bold`}>{data.shop.name}</h5>
         </Link>
-        <Link to={`${isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`}`}>
-          <h4 className="pb-3 font-[500]">
+
+        <Link
+          to={`${
+            isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`
+          }`}
+        >
+          <h4 className="pb-2 text-[18px] font-semibold text-gray-800">
             {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
           </h4>
 
-          <div className="flex">
-          <Ratings rating={data?.ratings} />
+          <div className="flex items-center pb-2">
+            <Ratings rating={data?.ratings} />
           </div>
 
           <div className="py-2 flex items-center justify-between">
-            <div className="flex">
-              <h5 className={`${styles.productDiscountPrice}`}>
-                {data.originalPrice === 0
-                  ? data.originalPrice
-                  : data.discountPrice}
-                $
+            <div className="flex items-center">
+              <h5 className={`${styles.productDiscountPrice} text-lg font-bold text-black`}>
+                ₦{data.discountPrice || data.originalPrice}
               </h5>
-              <h4 className={`${styles.price}`}>
-                {data.originalPrice ? data.originalPrice + " $" : null}
-              </h4>
+              {data.originalPrice && (
+                <h4 className={`${styles.price} text-sm text-gray-400 line-through pl-2`}>
+                  ₦{data.originalPrice}
+                </h4>
+              )}
             </div>
-            <span className="font-[400] text-[17px] text-[#68d284]">
-              {data?.sold_out} sold
+            <span className="font-medium text-[16px] text-green-600">
+              {data.sold_out} sold
             </span>
           </div>
         </Link>
 
-        {/* side options */}
-        <div>
+        {/* Action Icons */}
+        <div className="absolute right-3 top-4 flex flex-col items-center space-y-3">
           {click ? (
             <AiFillHeart
-              size={22}
-              className="cursor-pointer absolute right-2 top-5"
+              size={24}
+              className="cursor-pointer"
               onClick={() => removeFromWishlistHandler(data)}
-              color={click ? "red" : "#333"}
+              color="red"
               title="Remove from wishlist"
             />
           ) : (
             <AiOutlineHeart
-              size={22}
-              className="cursor-pointer absolute right-2 top-5"
+              size={24}
+              className="cursor-pointer"
               onClick={() => addToWishlistHandler(data)}
-              color={click ? "red" : "#333"}
+              color="#333"
               title="Add to wishlist"
             />
           )}
           <AiOutlineEye
-            size={22}
-            className="cursor-pointer absolute right-2 top-14"
+            size={24}
+            className="cursor-pointer"
             onClick={() => setOpen(!open)}
             color="#333"
             title="Quick view"
           />
           <AiOutlineShoppingCart
-            size={25}
-            className="cursor-pointer absolute right-2 top-24"
+            size={24}
+            className="cursor-pointer"
             onClick={() => addToCartHandler(data._id)}
             color="#444"
             title="Add to cart"
           />
-          {open ? <ProductDetailsCard setOpen={setOpen} data={data} /> : null}
         </div>
+
+        {open && <ProductDetailsCard setOpen={setOpen} data={data} />}
       </div>
     </>
   );

@@ -59,7 +59,7 @@ const Hero = () => {
             <p className="text-[35px] text-[blue] font-[700]">MARKETPLACE</p>
           </h1>
           <p className="pt-5 text-[16px] font-[Poppins] font-[400] text-[#000000ba]">
-            Shop Smart, Live Better. Experience the Future of Online Shopping
+          Shop Smartly, Elevate Your Lifestyle.<br /> Welcome to the Future of Online Shopping!
           </p>
           <Link to="/products" className="inline-block">
             <div className={`${styles.button} mt-5`}>

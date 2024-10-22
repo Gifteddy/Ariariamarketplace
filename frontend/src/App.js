@@ -6,6 +6,8 @@ import {
   SignupPage,
   ActivationPage,
   HomePage,
+  AboutUs,
+  LocationPage,
   ProductsPage,
   BestSellingPage,
   EventsPage,
@@ -60,6 +62,7 @@ import axios from "axios";
 import { server } from "./server";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import CareerPage from "./pages/CareerPage.jsx";
 
 const App = () => {
   const [stripeApikey, setStripeApiKey] = useState("");
@@ -95,6 +98,9 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/careers" element={<CareerPage />} />
+        <Route path="/location" element={<LocationPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
         <Route
           path="/activation/:activation_token"

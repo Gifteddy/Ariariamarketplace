@@ -26,8 +26,8 @@ export const navItems = [
   export const brandingData = [
     {
       id: 1,
-      title: "Free Shipping",
-      Description: "From all orders over 100$",
+      title: "Quality Products",
+      Description: "Shop from the best",
       icon: (
         <svg
           width="36"
@@ -76,8 +76,8 @@ export const navItems = [
     },
     {
       id: 2,
-      title: "Daily Surprise Offers",
-      Description: "Save up to 25% off",
+      title: "24/7 Service",
+      Description: "Enjoy our service at any time",
       icon: (
         <svg
           width="32"
@@ -641,19 +641,28 @@ export const navItems = [
       name: "About us",
       link: "/about"
     },
-    {
+    /*{
       name: "Careers",
-      link: "/carrers"
-    },
+      link: "/careers"
+    },*/
+    
     {
-      name: "Location",
+      name: "Contact Us",
+      link: "/contact"
     },
+
     {
+      name: "FAQ",
+    },
+
+    /* 
+   {
       name: "Our Blog",
     },
+    
     {
       name: "Reviews",
-    },
+    },*/
   ];
   
   export const footercompanyLinks = [
@@ -674,8 +683,8 @@ export const navItems = [
     },
   ];
   
-  export const footerSupportLinks = [
-    {
+   /* export const footerSupportLinks = [
+  {
       name: "FAQ",
     },
     {
@@ -691,4 +700,4 @@ export const navItems = [
       name: "Live chat",
     },
   ];
-  
+  */
