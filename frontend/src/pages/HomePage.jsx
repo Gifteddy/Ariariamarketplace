@@ -13,7 +13,7 @@ import ComingSoonCountdown from "../components/Layout/ComingSoonCountdown";
 
 const HomePage = () => {
   // Set a target date for the countdown
-  const targetDate = new Date('2024-10-22T21:11:19'); // Example target date
+  const targetDate = new Date('2024-10-23T15:37:19'); // Example target date
   
   return (
     <div style={{ overflowX: "hidden" }}>

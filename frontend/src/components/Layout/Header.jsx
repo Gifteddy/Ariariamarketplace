@@ -239,10 +239,8 @@ const Header = ({ activeHeading }) => {
         </div>
 
         {/* header sidebar */}
-        {open && (
-          <div
-            className={`fixed w-full bg-[#0000005f] z-20 h-full top-0 left-0`}
-          >
+          {open && (
+          <div className="fixed w-full bg-[#0000005f] z-20 h-full top-0 left-0">
             <div className="fixed w-[70%] bg-[#fff] h-screen top-0 left-0 z-10 overflow-y-scroll">
               <div className="w-full justify-between flex pr-3">
                 <div>
@@ -251,7 +249,7 @@ const Header = ({ activeHeading }) => {
                     onClick={() => setOpenWishlist(true) || setOpen(false)}
                   >
                     <AiOutlineHeart size={30} className="mt-5 ml-3" />
-                    <span class="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px]  leading-tight text-center">
+                    <span className="absolute right-0 top-0 rounded-full bg-[#3bc177] w-4 h-4 top right p-0 m-0 text-white font-mono text-[12px] leading-tight text-center">
                       {wishlist && wishlist.length}
                     </span>
                   </div>
@@ -263,7 +261,8 @@ const Header = ({ activeHeading }) => {
                 />
               </div>
 
-              <div className="my-8 w-[92%] m-auto h-[40px relative]">
+              <div className="my-8 w-[92%] m-auto relative">
+                {/* Search box in mobile sidebar */}
                 <input
                   type="search"
                   placeholder="Search Product..."
@@ -271,25 +270,21 @@ const Header = ({ activeHeading }) => {
                   value={searchTerm}
                   onChange={handleSearchChange}
                 />
-                {searchData && (
-                  <div className="absolute bg-[#fff] z-10 shadow w-full left-0 p-3">
-                    {searchData.map((i) => {
-                      const d = i.name;
-
-                      const Product_name = d.replace(/\s+/g, "-");
-                      return (
-                        <Link to={`/product/${Product_name}`}>
-                          <div className="flex items-center">
-                            <img
-                              src={i.image_Url[0]?.url}
-                              alt=""
-                              className="w-[50px] mr-2"
-                            />
-                            <h5>{i.name}</h5>
-                          </div>
-                        </Link>
-                      );
-                    })}
+                {/* Render search results */}
+                {searchData && searchData.length > 0 && (
+                  <div className="absolute bg-[#fff] z-20 shadow w-full left-0 p-3 max-h-[300px] overflow-y-auto">
+                    {searchData.map((i, index) => (
+                      <Link to={`/product/${i._id}`} key={index}>
+                        <div className="flex items-center mb-3">
+                          <img
+                            src={i.images[0]?.url}
+                            alt=""
+                            className="w-[50px] h-[50px] mr-2"
+                          />
+                          <h5>{i.name}</h5>
+                        </div>
+                      </Link>
+                    ))}
                   </div>
                 )}
               </div>

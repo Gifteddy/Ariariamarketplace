@@ -8,39 +8,48 @@ const AboutUs = () => {
         <h1 style={styles.bannerTitle}>Welcome to</h1>
         <h1 style={styles.bannerMainTitle}>ARIARIA MARKETPLACE</h1>
         <p style={styles.bannerSubtitle}>
-        Shop Smartly, Elevate Your Lifestyle. Welcome to the Future of Online Shopping!
+          Shop Smartly, Elevate Your Lifestyle. Welcome to the Future of Online Shopping!
         </p>
       </div>
 
       {/* Main About Us Content */}
       <div style={styles.contentSection}>
+        {/* About Ariaria Marketplace */}
+        <section style={styles.aboutSection}>
+          <h2 style={styles.sectionTitle}>About Ariariamarketplace.com.ng</h2>
+          <p style={styles.sectionText}>
+            <strong>Ariariamarketplace.com.ng</strong> is managed by Abanaijamade Ecart Ltd, with its corporate office located at No. 206 Faulks Road by Samek Junction, Aba, Abia State, Nigeria. This online multivendor marketplace allows vendors and wholesalers in Ariaria market and beyond to display over 1,000,000 quality products, including fashion, cosmetics, electronics, food & beverages, furniture, and more. Customers worldwide can access and purchase wholesale products with ease. The platform connects serious buyers with wholesalers, who fulfill and deliver their orders promptly.
+          </p>
+        </section>
+
         {/* Our Mission Section */}
         <section style={styles.missionSection}>
           <h2 style={styles.sectionTitle}>Our Mission</h2>
           <p style={styles.sectionText}>
-            At <strong>Ariaria Marketplace</strong>, we are revolutionizing the way people shop online. Our mission is to bring you a curated, smart, and enjoyable shopping experience that saves you time, enhances your lifestyle, and provides unbeatable value.
+            To connect wholesalers in Ariaria International Market with customers worldwide, ensuring trust and product satisfaction. We bring together buyers, producers, and suppliers on one platform, eliminating the risks of long-distance travel by allowing customers to easily reach wholesalers online and receive their products quickly.
           </p>
+        </section>
+
+        {/* Core Values */}
+        <section style={styles.coreValuesSection}>
+          <h2 style={styles.sectionTitle}>Our Core Values</h2>
+          <ul style={styles.offerList}>
+            <li style={styles.offerItem}><strong>Quality Assurance:</strong> We ensure high-quality products from certified sellers.</li>
+            <li style={styles.offerItem}><strong>Integrity & Honesty:</strong> Transparency in all transactions.</li>
+            <li style={styles.offerItem}><strong>Commitment to Excellence:</strong> We strive to be leaders in the eCommerce industry.</li>
+            <li style={styles.offerItem}><strong>Customer Relationship:</strong> Building strong, trust-based relationships with customers.</li>
+          </ul>
         </section>
 
         {/* What We Offer Section */}
         <section style={styles.offerSection}>
           <h2 style={styles.sectionTitle}>What We Offer</h2>
           <ul style={styles.offerList}>
-            <li style={styles.offerItem}>
-              <strong>Wide Product Range:</strong> From fashion and electronics to home essentials and personal care, we have it all.
-            </li>
-            <li style={styles.offerItem}>
-              <strong>Exclusive Deals & Discounts:</strong> Enjoy unbeatable prices and special offers on top products.
-            </li>
-            <li style={styles.offerItem}>
-              <strong>Trusted Sellers:</strong> We partner with verified and trusted sellers to guarantee quality and satisfaction.
-            </li>
-            <li style={styles.offerItem}>
-              <strong>Fast & Reliable Delivery:</strong> Get your products delivered quickly and safely to your doorstep.
-            </li>
-            <li style={styles.offerItem}>
-              <strong>Customer-Centric Service:</strong> Our dedicated customer support is always here to help you.
-            </li>
+            <li style={styles.offerItem}><strong>Wide Product Range:</strong> From fashion to electronics, home essentials, and personal care, we offer everything you need.</li>
+            <li style={styles.offerItem}><strong>Professional Wholesalers:</strong> We collaborate with verified wholesalers and SMEs from Aba and across Nigeria.</li>
+            <li style={styles.offerItem}><strong>Global Access:</strong> Shop from anywhere in the world with guaranteed access.</li>
+            <li style={styles.offerItem}><strong>Multiple Payment Options:</strong> Enjoy flexibility with different payment methods available.</li>
+            <li style={styles.offerItem}><strong>Efficient Delivery:</strong> We have a reliable delivery system both within and outside Nigeria.</li>
           </ul>
         </section>
 
@@ -48,39 +57,38 @@ const AboutUs = () => {
         <section style={styles.whySection}>
           <h2 style={styles.sectionTitle}>Why Shop with Ariaria Marketplace?</h2>
           <p style={styles.sectionText}>
-            Ariaria Marketplace is not just another online store—it's a community where we prioritize your needs and lifestyle. Our user-friendly platform, smart shopping tools, and passionate team are committed to helping you discover products that fit your unique taste and budget.
+            Ariariamarketplace.com.ng is not just an online store—it's a platform designed to provide seamless, efficient communication between buyers, producers, and suppliers. Our website ensures access to high-quality, trendy products at affordable prices, with quick shipments and deliveries.
           </p>
           <div style={styles.benefitsGrid}>
             <div style={styles.benefitItem}>
-              <h3 style={styles.benefitTitle}>Smart Shopping</h3>
-              <p style={styles.benefitText}>Make informed choices with detailed product descriptions, reviews, and comparisons.</p>
+              <h3 style={styles.benefitTitle}>Variety of Products</h3>
+              <p style={styles.benefitText}>Browse through over 1,000,000 products in various categories.</p>
             </div>
             <div style={styles.benefitItem}>
-              <h3 style={styles.benefitTitle}>Trusted by Millions</h3>
-              <p style={styles.benefitText}>Join a community of savvy shoppers who trust Ariaria Marketplace for quality and value.</p>
+              <h3 style={styles.benefitTitle}>Verified Sellers</h3>
+              <p style={styles.benefitText}>Only certified and professional sellers can sell on our platform.</p>
             </div>
             <div style={styles.benefitItem}>
-              <h3 style={styles.benefitTitle}>Seamless Experience</h3>
-              <p style={styles.benefitText}>Shop effortlessly across all devices with our responsive design and intuitive interface.</p>
+              <h3 style={styles.benefitTitle}>24/7 Availability</h3>
+              <p style={styles.benefitText}>Our platform is available anytime, anywhere, offering uninterrupted service.</p>
             </div>
             <div style={styles.benefitItem}>
-              <h3 style={styles.benefitTitle}>Sustainability</h3>
-              <p style={styles.benefitText}>We promote eco-friendly products and sustainable business practices for a better future.</p>
+              <h3 style={styles.benefitTitle}>Guaranteed Satisfaction</h3>
+              <p style={styles.benefitText}>We ensure that all our customers get high-quality products that meet their needs.</p>
             </div>
           </div>
         </section>
 
         {/* Call to Action */}
         <section style={styles.ctaSection}>
-  <h2 style={styles.ctaTitle}>Ready to Experience the Future of Shopping?</h2>
-  <p style={styles.ctaText}>
-    Start exploring the best products, unbeatable deals, and a smarter way to shop. Join the Ariaria Marketplace community today!
-  </p>
-  <a href="/products" style={styles.ctaButton}>
-    Shop Now
-  </a>
-</section>
-
+          <h2 style={styles.ctaTitle}>Ready to Experience the Future of Shopping?</h2>
+          <p style={styles.ctaText}>
+            Join Ariaria Marketplace today, and enjoy a smarter way to shop. Discover unbeatable deals and a wide variety of quality products!
+          </p>
+          <a href="/products" style={styles.ctaButton}>
+            Shop Now
+          </a>
+        </section>
       </div>
     </div>
   );
