@@ -38,31 +38,30 @@ const Hero = () => {
     <div className="relative w-full overflow-hidden">
       {/* Fixed Text Content */}
       <div
-  className={`${
-    styles.section
-  } w-[90%] 800px:w-[60%] absolute  p-5 ${
-    // For larger screens (>= 800px), center vertically, for smaller screens move to bottom center
+  className={`${styles.section} w-[90%] 800px:w-[60%] absolute p-2 ${
     window.innerWidth < 1200
-      ? "bottom-10 left-1/2 transform -translate-x-1/2 translate-y-0 text-center bg-white bg-opacity-20 backdrop-blur-md rounded-lg shadow-md px-4 py-3 max-w-[1000px] text-[0.1rem]"
-      : "top-1/2 left-[10%] transform -translate-y-1/2"
-  }`}  style={{
+      ? "bottom-10 left-1/2 transform -translate-x-1/2 translate-y-0 text-center bg-white bg-opacity-20 backdrop-blur-md rounded-lg shadow-md px-2 py-1 max-w-[300px] text-[0.5rem]" // Reduced text size and max width for smaller screens
+      : "top-1/2 left-[10%] transform -translate-y-1/2 text-[0.75rem] max-w-[500px]" // Reduced text size and max width for larger screens
+  }`}
+  style={{
     zIndex: 1,
   }}
 >
-  <h1 className="text-[35px] leading-[1.2] 800px:text-[60px] text-[blue] font-[700] capitalize">
-    <p className="pt-5 text-[25px] font-[700] text-[green]">Welcome to</p>
+  <h1 className="text-[20px] leading-[1.2] 800px:text-[30px] text-[blue] font-[700] capitalize">
+    <p className="pt-5 text-[15px] font-[700] text-[green]">Welcome to</p>
     ARIARIA
-    <p className="text-[35px] text-[blue] font-[700]">MARKETPLACE</p>
+    <p className="text-[20px] text-[blue] font-[700]">MARKETPLACE</p>
   </h1>
-  <p className="pt-5 text-[16px] font-[Poppins] font-[400] text-[#000000ba]">
+  <p className="pt-3 text-[12px] font-[Poppins] font-[400] text-[#000000ba]">
     Shop Smartly, Elevate Your Lifestyle.<br /> Welcome to the Future of Online Shopping!
   </p>
   <Link to="/products" className="inline-block">
-    <div className={`${styles.button} mt-5`}>
-      <span className="text-[#fff] font-[Poppins] text-[18px]">Shop Now!</span>
+    <div className={`${styles.button} mt-3`}>
+      <span className="text-[#fff] font-[Poppins] text-[12px]">Shop Now!</span>
     </div>
   </Link>
 </div>
+
 
       {/* Carousel */}
       <div
