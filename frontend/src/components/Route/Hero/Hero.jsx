@@ -47,17 +47,17 @@ const Hero = () => {
     zIndex: 1,
   }}
 >
-  <h1 className="text-[25px] leading-[1.2] 800px:text-[30px] text-[blue] font-[700] capitalize">
-    <p className="pt-5 text-[20px] font-[700] text-[green]">Welcome to</p>
+  <h1 className="text-[20px] leading-[1.2] 800px:text-[30px] text-[blue] font-[700] capitalize">
+    <p className="pt-5 text-[15px] font-[700] text-[green]">Welcome to</p>
     ARIARIA
-    <p className="text-[25px] text-[blue] font-[700]">MARKETPLACE</p>
+    <p className="text-[20px] text-[blue] font-[700]">MARKETPLACE</p>
   </h1>
-  <p className="pt-3 text-[17px] font-[Poppins] font-[600] text-[#000000ba]">
+  <p className="pt-3 text-[12px] font-[Poppins] font-[400] text-[#000000ba]">
     Shop Smartly, Elevate Your Lifestyle.<br /> Welcome to the Future of Online Shopping!
   </p>
   <Link to="/products" className="inline-block">
     <div className={`${styles.button} mt-3`}>
-      <span className="text-[#fff] font-[Poppins] text-[17px]">Shop Now!</span>
+      <span className="text-[#fff] font-[Poppins] text-[12px]">Shop Now!</span>
     </div>
   </Link>
 </div>
