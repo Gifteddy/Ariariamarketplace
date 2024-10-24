@@ -43,7 +43,7 @@ const Hero = () => {
   } w-[90%] 800px:w-[60%] absolute  p-5 ${
     // For larger screens (>= 800px), center vertically, for smaller screens move to bottom center
     window.innerWidth < 1200
-      ? "bottom-10 left-1/2 transform -translate-x-1/2 translate-y-0 text-center bg-white bg-opacity-20 backdrop-blur-md rounded-lg shadow-md px-4 py-3 max-w-[1000px]"
+      ? "bottom-10 left-1/2 transform -translate-x-1/2 translate-y-0 text-center bg-white bg-opacity-20 backdrop-blur-md rounded-lg shadow-md px-4 py-3 max-w-[1000px] text-[0.9rem]"
       : "top-1/2 left-[10%] transform -translate-y-1/2"
   }`}  style={{
     zIndex: 1,
