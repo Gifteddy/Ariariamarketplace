@@ -46,7 +46,7 @@ import {
   AdminDashboardOrders,
   AdminDashboardProducts,
   AdminDashboardEvents,
-  AdminDashboardWithdraw
+  AdminDashboardWithdraw,
 } from "./routes/AdminRoutes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -60,41 +60,40 @@ import { getAllProducts } from "./redux/actions/product";
 import { getAllEvents } from "./redux/actions/event";
 import axios from "axios";
 import { server } from "./server";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import CareerPage from "./pages/CareerPage.jsx";
 
 const App = () => {
-  const [stripeApikey, setStripeApiKey] = useState("");
+  const [paystackAuthUrl, setPaystackAuthUrl] = useState("");
 
-  async function getStripeApikey() {
-    const { data } = await axios.get(`${server}/payment/stripeapikey`);
-    setStripeApiKey(data.stripeApikey);
-  }
+  // Function to initialize a Paystack payment session
+  const initializePaystackPayment = async (amount, email) => {
+    try {
+      const { data } = await axios.post(`${server}/payment/process`, {
+        amount: amount * 100, // Amount in kobo
+        email: email, // Replace with actual customer email
+      });
+      setPaystackAuthUrl(data.authorization_url); // Set the URL from Paystack
+    } catch (error) {
+      console.error("Failed to initialize payment:", error);
+    }
+  };
+
   useEffect(() => {
     Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
     Store.dispatch(getAllProducts());
     Store.dispatch(getAllEvents());
-    getStripeApikey();
   }, []);
+
+  useEffect(() => {
+    // Redirect to Paystack payment page if auth URL is set
+    if (paystackAuthUrl) {
+      window.location.href = paystackAuthUrl; // Redirect the user to Paystack for payment
+    }
+  }, [paystackAuthUrl]);
 
   return (
     <BrowserRouter>
-      {stripeApikey && (
-        <Elements stripe={loadStripe(stripeApikey)}>
-          <Routes>
-            <Route
-              path="/payment"
-              element={
-                <ProtectedRoute>
-                  <PaymentPage />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </Elements>
-      )}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -102,14 +101,8 @@ const App = () => {
         <Route path="/careers" element={<CareerPage />} />
         <Route path="/location" element={<LocationPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
-        <Route
-          path="/activation/:activation_token"
-          element={<ActivationPage />}
-        />
-        <Route
-          path="/seller/activation/:activation_token"
-          element={<SellerActivationPage />}
-        />
+        <Route path="/activation/:activation_token" element={<ActivationPage />} />
+        <Route path="/seller/activation/:activation_token" element={<SellerActivationPage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
         <Route path="/best-selling" element={<BestSellingPage />} />
@@ -119,7 +112,15 @@ const App = () => {
           path="/checkout"
           element={
             <ProtectedRoute>
-              <CheckoutPage />
+              <CheckoutPage onPaymentInit={initializePaystackPayment} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment"
+          element={
+            <ProtectedRoute>
+              <PaymentPage onPaymentInit={initializePaystackPayment} />
             </ProtectedRoute>
           }
         />
@@ -157,7 +158,7 @@ const App = () => {
           }
         />
         <Route path="/shop/preview/:id" element={<ShopPreviewPage />} />
-        {/* shop Routes */}
+        {/* Shop Routes */}
         <Route path="/shop-create" element={<ShopCreatePage />} />
         <Route path="/shop-login" element={<ShopLoginPage />} />
         <Route
@@ -208,7 +209,6 @@ const App = () => {
             </SellerProtectedRoute>
           }
         />
-
         <Route
           path="/order/:id"
           element={
@@ -298,7 +298,7 @@ const App = () => {
             </ProtectedAdminRoute>
           }
         />
-         <Route
+        <Route
           path="/admin-products"
           element={
             <ProtectedAdminRoute>
@@ -306,7 +306,7 @@ const App = () => {
             </ProtectedAdminRoute>
           }
         />
-         <Route
+        <Route
           path="/admin-events"
           element={
             <ProtectedAdminRoute>
@@ -314,7 +314,7 @@ const App = () => {
             </ProtectedAdminRoute>
           }
         />
-         <Route
+        <Route
           path="/admin-withdraw-request"
           element={
             <ProtectedAdminRoute>

@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser"); // Import body-parser for handling larger payloads
 const { isSeller, isAuthenticated, isAdmin } = require("../middleware/auth");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const router = express.Router();
@@ -8,7 +9,11 @@ const Shop = require("../model/shop");
 const cloudinary = require("cloudinary");
 const ErrorHandler = require("../utils/ErrorHandler");
 
-// create product
+// Increase payload size limit to 50MB
+router.use(bodyParser.json({ limit: '100mb' }));
+router.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
+
+// Create product
 router.post(
   "/create-product",
   catchAsyncErrors(async (req, res, next) => {
@@ -25,20 +30,24 @@ router.post(
         } else {
           images = req.body.images;
         }
-      
+
         const imagesLinks = [];
-      
+
         for (let i = 0; i < images.length; i++) {
           const result = await cloudinary.v2.uploader.upload(images[i], {
             folder: "products",
+            transformation: [
+              { width: 200, height: 200, crop: "limit" }, // Resize to 800x800 max
+              { quality: "auto" } // Auto quality to compress the image
+            ],
           });
-      
+
           imagesLinks.push({
             public_id: result.public_id,
             url: result.secure_url,
           });
         }
-      
+
         const productData = req.body;
         productData.images = imagesLinks;
         productData.shop = shop;
@@ -56,7 +65,7 @@ router.post(
   })
 );
 
-// get all products of a shop
+// Get all products of a shop
 router.get(
   "/get-all-products-shop/:id",
   catchAsyncErrors(async (req, res, next) => {
@@ -73,7 +82,7 @@ router.get(
   })
 );
 
-// delete product of a shop
+// Delete product of a shop
 router.delete(
   "/delete-shop-product/:id",
   isSeller,
@@ -83,14 +92,12 @@ router.delete(
 
       if (!product) {
         return next(new ErrorHandler("Product is not found with this id", 404));
-      }    
-
-      for (let i = 0; 1 < product.images.length; i++) {
-        const result = await cloudinary.v2.uploader.destroy(
-          product.images[i].public_id
-        );
       }
-    
+
+      for (let i = 0; i < product.images.length; i++) {
+        await cloudinary.v2.uploader.destroy(product.images[i].public_id);
+      }
+
       await product.remove();
 
       res.status(201).json({
@@ -103,7 +110,7 @@ router.delete(
   })
 );
 
-// get all products
+// Get all products
 router.get(
   "/get-all-products",
   catchAsyncErrors(async (req, res, next) => {
@@ -120,7 +127,7 @@ router.get(
   })
 );
 
-// review for a product
+// Create review for a product
 router.put(
   "/create-new-review",
   isAuthenticated,
@@ -144,7 +151,9 @@ router.put(
       if (isReviewed) {
         product.reviews.forEach((rev) => {
           if (rev.user._id === req.user._id) {
-            (rev.rating = rating), (rev.comment = comment), (rev.user = user);
+            rev.rating = rating;
+            rev.comment = comment;
+            rev.user = user;
           }
         });
       } else {
@@ -152,7 +161,6 @@ router.put(
       }
 
       let avg = 0;
-
       product.reviews.forEach((rev) => {
         avg += rev.rating;
       });
@@ -169,7 +177,7 @@ router.put(
 
       res.status(200).json({
         success: true,
-        message: "Reviwed succesfully!",
+        message: "Reviewed successfully!",
       });
     } catch (error) {
       return next(new ErrorHandler(error, 400));
@@ -177,16 +185,14 @@ router.put(
   })
 );
 
-// all products --- for admin
+// Get all products - Admin only
 router.get(
   "/admin-all-products",
   isAuthenticated,
   isAdmin("Admin"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const products = await Product.find().sort({
-        createdAt: -1,
-      });
+      const products = await Product.find().sort({ createdAt: -1 });
       res.status(201).json({
         success: true,
         products,
@@ -196,4 +202,5 @@ router.get(
     }
   })
 );
+
 module.exports = router;

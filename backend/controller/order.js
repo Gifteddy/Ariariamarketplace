@@ -14,9 +14,16 @@ router.post(
     try {
       const { cart, shippingAddress, user, totalPrice, paymentInfo } = req.body;
 
-      //   group cart items by shopId
-      const shopItemsMap = new Map();
+      // Log incoming request data for debugging
+      console.log("Order creation request received:", req.body);
 
+      // Validate request body
+      if (!cart || !shippingAddress || !user || !totalPrice /*|| !paymentInfo*/) {
+        throw new ErrorHandler("Incomplete order data provided", 400);
+      }
+
+      // Group cart items by shopId
+      const shopItemsMap = new Map();
       for (const item of cart) {
         const shopId = item.shopId;
         if (!shopItemsMap.has(shopId)) {
@@ -25,9 +32,8 @@ router.post(
         shopItemsMap.get(shopId).push(item);
       }
 
-      // create an order for each shop
+      // Create an order for each shop
       const orders = [];
-
       for (const [shopId, items] of shopItemsMap) {
         const order = await Order.create({
           cart: items,
@@ -36,14 +42,18 @@ router.post(
           totalPrice,
           paymentInfo,
         });
+        if (!order) throw new Error("Failed to create order for shop " + shopId);
         orders.push(order);
       }
+
+      console.log("Orders created successfully:", orders);
 
       res.status(201).json({
         success: true,
         orders,
       });
     } catch (error) {
+      console.error("Error creating order:", error.message);
       return next(new ErrorHandler(error.message, 500));
     }
   })
@@ -100,10 +110,12 @@ router.put(
       if (!order) {
         return next(new ErrorHandler("Order not found with this id", 400));
       }
+
       if (req.body.status === "Transferred to delivery partner") {
-        order.cart.forEach(async (o) => {
-          await updateOrder(o._id, o.qty);
-        });
+        // Use Promise.all to handle asynchronous updates
+        await Promise.all(
+          order.cart.map((o) => updateOrder(o._id, o.qty))
+        );
       }
 
       order.status = req.body.status;
@@ -111,7 +123,7 @@ router.put(
       if (req.body.status === "Delivered") {
         order.deliveredAt = Date.now();
         order.paymentInfo.status = "Succeeded";
-        const serviceCharge = order.totalPrice * .10;
+        const serviceCharge = order.totalPrice * 0.10;
         await updateSellerInfo(order.totalPrice - serviceCharge);
       }
 
@@ -122,29 +134,28 @@ router.put(
         order,
       });
 
+      // Update stock and sold-out quantities for products
       async function updateOrder(id, qty) {
         const product = await Product.findById(id);
-
         product.stock -= qty;
         product.sold_out += qty;
-
         await product.save({ validateBeforeSave: false });
       }
 
+      // Update seller's available balance
       async function updateSellerInfo(amount) {
         const seller = await Shop.findById(req.seller.id);
-        
-        seller.availableBalance = amount;
-
+        seller.availableBalance += amount; // Accumulate balance
         await seller.save();
       }
     } catch (error) {
+      console.error("Error updating order status:", error.message);
       return next(new ErrorHandler(error.message, 500));
     }
   })
 );
 
-// give a refund ----- user
+// give a refund - user
 router.put(
   "/order-refund/:id",
   catchAsyncErrors(async (req, res, next) => {
@@ -156,7 +167,6 @@ router.put(
       }
 
       order.status = req.body.status;
-
       await order.save({ validateBeforeSave: false });
 
       res.status(200).json({
@@ -170,7 +180,7 @@ router.put(
   })
 );
 
-// accept the refund ---- seller
+// accept the refund - seller
 router.put(
   "/order-refund-success/:id",
   isSeller,
@@ -183,26 +193,24 @@ router.put(
       }
 
       order.status = req.body.status;
-
       await order.save();
 
       res.status(200).json({
         success: true,
-        message: "Order Refund successfull!",
+        message: "Order Refund successful!",
       });
 
       if (req.body.status === "Refund Success") {
-        order.cart.forEach(async (o) => {
-          await updateOrder(o._id, o.qty);
-        });
+        // Use Promise.all to handle asynchronous updates
+        await Promise.all(
+          order.cart.map((o) => updateOrder(o._id, o.qty))
+        );
       }
 
       async function updateOrder(id, qty) {
         const product = await Product.findById(id);
-
         product.stock += qty;
         product.sold_out -= qty;
-
         await product.save({ validateBeforeSave: false });
       }
     } catch (error) {
@@ -211,7 +219,7 @@ router.put(
   })
 );
 
-// all orders --- for admin
+// get all orders - for admin
 router.get(
   "/admin-all-orders",
   isAuthenticated,
