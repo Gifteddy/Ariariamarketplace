@@ -39,8 +39,8 @@ router.post("/create-shop", catchAsyncErrors(async (req, res, next) => {
 
     const activationToken = createActivationToken(seller);
 
-      // const activationUrl = `https://ariariamarketplace.vercel.app/seller/activation/${activationToken}`;
- const activationUrl = `http://localhost:3000/seller/activation/${activationToken}`;
+      const activationUrl = `https://ariariamarketplace.vercel.app/seller/activation/${activationToken}`;
+       //const activationUrl = `http://localhost:3000/seller/activation/${activationToken}`;
 
     try {
       await sendMail({
