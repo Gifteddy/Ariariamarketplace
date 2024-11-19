@@ -79,12 +79,12 @@ const WithdrawMoney = () => {
   };
 
   const error = () => {
-    toast.error("You not have enough balance to withdraw!");
+    toast.error("You don't have enough balance to withdraw!");
   };
 
   const withdrawHandler = async () => {
-    if (withdrawAmount < 50 || withdrawAmount > availableBalance) {
-      toast.error("You can't withdraw this amount!");
+    if (withdrawAmount < 3000 || withdrawAmount > availableBalance) {
+      toast.error("You can't withdraw less than ₦3000!");
     } else {
       const amount = withdrawAmount;
       await axios
@@ -109,7 +109,7 @@ const WithdrawMoney = () => {
         </h5>
         <div
           className={`${styles.button} text-white !h-[42px] !rounded`}
-          onClick={() => (availableBalance < 50 ? error() : setOpen(true))}
+          onClick={() => (availableBalance < 3000 ? error() : setOpen(true))}
         >
           Withdraw
         </div>

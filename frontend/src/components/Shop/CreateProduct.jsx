@@ -35,29 +35,20 @@ const CreateProduct = () => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-
-    setImages([]);
-
-    files.forEach((file) => {
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        if (reader.readyState === 2) {
-          setImages((old) => [...old, reader.result]);
-        }
-      };
-      reader.readAsDataURL(file);
-    });
+    setImages(files); // Store the files directly
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const newForm = new FormData();
-
+    
+    // Append the images files to FormData
     images.forEach((image) => {
-      newForm.set("images", image);
+      newForm.append("images", image); // The 'images' field is expected by the backend
     });
+    
+    // Append other form fields to FormData
     newForm.append("name", name);
     newForm.append("description", description);
     newForm.append("category", category);
@@ -67,20 +58,9 @@ const CreateProduct = () => {
     newForm.append("discountPrice", discountPrice);
     newForm.append("stock", stock);
     newForm.append("shopId", seller._id);
-    dispatch(
-      createProduct({
-        name,
-        description,
-        category,
-        subcategory, // Add subcategory to the dispatch
-        tags,
-        originalPrice,
-        discountPrice,
-        stock,
-        shopId: seller._id,
-        images,
-      })
-    );
+
+    // Dispatch action to create product
+    dispatch(createProduct(newForm)); // Pass the FormData to the action
   };
 
   return (
@@ -229,11 +209,11 @@ const CreateProduct = () => {
             <label htmlFor="upload">
               <AiOutlinePlusCircle size={30} className="mt-3" color="#555" />
             </label>
-            {images.map((i) => (
+            {images.map((i, index) => (
               <img
-                src={i}
-                key={i}
-                alt=""
+                src={URL.createObjectURL(i)}
+                key={index}
+                alt="Preview"
                 className="h-[120px] w-[120px] object-cover m-2"
               />
             ))}

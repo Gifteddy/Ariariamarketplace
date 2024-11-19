@@ -1,44 +1,49 @@
 import { React, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { RxAvatar } from "react-icons/rx";
 import styles from "../../styles/styles";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
-import { RxAvatar } from "react-icons/rx";
 
 const ShopCreate = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState();
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
-  const [zipCode, setZipCode] = useState();
-  const [avatar, setAvatar] = useState();
+  const [zipCode, setZipCode] = useState("");
+  const [avatar, setAvatar] = useState(null);
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("avatar", avatar);
+    formData.append("zipCode", zipCode);
+    formData.append("address", address);
+    formData.append("phoneNumber", phoneNumber);
+
     axios
-      .post(`${server}/shop/create-shop`, {
-        name,
-        email,
-        password,
-        avatar,
-        zipCode,
-        address,
-        phoneNumber,
+      .post(`${server}/shop/create-shop`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       })
       .then((res) => {
         toast.success(res.data.message);
         setName("");
         setEmail("");
         setPassword("");
-        setAvatar();
-        setZipCode();
+        setAvatar(null);
+        setZipCode("");
         setAddress("");
-        setPhoneNumber();
+        setPhoneNumber("");
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -46,15 +51,7 @@ const ShopCreate = () => {
   };
 
   const handleFileInputChange = (e) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      if (reader.readyState === 2) {
-        setAvatar(reader.result);
-      }
-    };
-
-    reader.readAsDataURL(e.target.files[0]);
+    setAvatar(e.target.files[0]); // Save the file instead of a base64 string
   };
 
   return (
@@ -69,14 +66,14 @@ const ShopCreate = () => {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
-                htmlFor="email"
+                htmlFor="name"
                 className="block text-sm font-medium text-gray-700"
               >
                 Shop Name
               </label>
               <div className="mt-1">
                 <input
-                  type="name"
+                  type="text"
                   name="name"
                   required
                   value={name}
@@ -88,15 +85,15 @@ const ShopCreate = () => {
 
             <div>
               <label
-                htmlFor="email"
+                htmlFor="phoneNumber"
                 className="block text-sm font-medium text-gray-700"
               >
                 Phone Number
               </label>
               <div className="mt-1">
                 <input
-                  type="number"
-                  name="phone-number"
+                  type="text"
+                  name="phoneNumber"
                   required
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
@@ -127,14 +124,14 @@ const ShopCreate = () => {
 
             <div>
               <label
-                htmlFor="email"
+                htmlFor="address"
                 className="block text-sm font-medium text-gray-700"
               >
                 Address
               </label>
               <div className="mt-1">
                 <input
-                  type="address"
+                  type="text"
                   name="address"
                   required
                   value={address}
@@ -146,15 +143,15 @@ const ShopCreate = () => {
 
             <div>
               <label
-                htmlFor="email"
+                htmlFor="zipCode"
                 className="block text-sm font-medium text-gray-700"
               >
                 Zip Code
               </label>
               <div className="mt-1">
                 <input
-                  type="number"
-                  name="zipcode"
+                  type="text"
+                  name="zipCode"
                   required
                   value={zipCode}
                   onChange={(e) => setZipCode(e.target.value)}
@@ -200,12 +197,14 @@ const ShopCreate = () => {
               <label
                 htmlFor="avatar"
                 className="block text-sm font-medium text-gray-700"
-              ></label>
+              >
+                Avatar
+              </label>
               <div className="mt-2 flex items-center">
                 <span className="inline-block h-8 w-8 rounded-full overflow-hidden">
                   {avatar ? (
                     <img
-                      src={avatar}
+                      src={URL.createObjectURL(avatar)}
                       alt="avatar"
                       className="h-full w-full object-cover rounded-full"
                     />
@@ -222,6 +221,7 @@ const ShopCreate = () => {
                     type="file"
                     name="avatar"
                     id="file-input"
+                    accept="image/*"
                     onChange={handleFileInputChange}
                     className="sr-only"
                   />

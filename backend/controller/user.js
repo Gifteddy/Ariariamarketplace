@@ -10,52 +10,76 @@ const sendToken = require("../utils/jwtToken");
 const { isAuthenticated, isAdmin } = require("../middleware/auth");
 
 // create user
-router.post("/create-user", async (req, res, next) => {
-  try {
-    const { name, email, password, avatar } = req.body;
-    const userEmail = await User.findOne({ email });
 
-    if (userEmail) {
-      return next(new ErrorHandler("User already exists", 400));
-    }
+// Import multer configuration
+const upload = require("../utils/multer"); // Adjust the path to your multer setup
 
-    const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-      folder: "avatars",
-    });
-
-    const user = {
-      name: name,
-      email: email,
-      password: password,
-      avatar: {
-        public_id: myCloud.public_id,
-        url: myCloud.secure_url,
-      },
-    };
-
-    const activationToken = createActivationToken(user);
-
-        const activationUrl = `https://www.ariariamarketplace.com.ng/activation/${activationToken}`;
-      //const activationUrl = `https://ariariamarketplace.vercel.app/activation/${activationToken}`;
-      //const activationUrl = `http://localhost:3000/activation/${activationToken}`;
-
+router.post(
+  "/create-user",
+  upload.single("avatar"), // Handle a single file upload with field name "avatar"
+  async (req, res, next) => {
     try {
-      await sendMail({
-        email: user.email,
-        subject: "Activate your account",
-        message: `Hello ${user.name}, please click on the link to activate your account: ${activationUrl}`,
+      const { name, email, password } = req.body;
+
+      // Check if the email already exists
+      const userEmail = await User.findOne({ email });
+      if (userEmail) {
+        return next(new ErrorHandler("User already exists", 400));
+      }
+
+      // Upload the avatar file to Cloudinary
+      const result = await cloudinary.v2.uploader.upload(req.file.path, {
+        folder: "avatars",
       });
-      res.status(201).json({
-        success: true,
-        message: `please check your email:- ${user.email} to activate your account!`,
+
+      // Delete the file from local storage after uploading to Cloudinary
+      const fs = require("fs");
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.error("Error deleting file:", err);
+        }
       });
+
+      // Create a new user object
+      const user = {
+        name,
+        email,
+        password,
+        avatar: {
+          public_id: result.public_id,
+          url: result.secure_url,
+        },
+      };
+
+      // Generate activation token
+      const activationToken = createActivationToken(user);
+      
+       const activationUrl = `https://www.ariariamarketplace.com.ng/activation/${activationToken}`;
+     //const activationUrl = `https://ariariamarketplace.vercel.app/activation/${activationToken}`;
+     //const activationUrl = `http://localhost:3000/activation/${activationToken}`;
+
+      try {
+        // Send activation email
+        await sendMail({
+          email: user.email,
+          subject: "Activate your account",
+          message: `Hello ${user.name}, please click on the link to activate your account: ${activationUrl}`,
+        });
+
+        res.status(201).json({
+          success: true,
+          message: `Please check your email: ${user.email} to activate your account!`,
+        });
+      } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+      }
     } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
+      return next(new ErrorHandler(error.message, 400));
     }
-  } catch (error) {
-    return next(new ErrorHandler(error.message, 400));
   }
-});
+);
+
+
 
 // create activation token
 const createActivationToken = (user) => {

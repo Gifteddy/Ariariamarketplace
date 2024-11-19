@@ -7,6 +7,8 @@ import {
   ActivationPage,
   HomePage,
   AboutUs,
+  Policy,
+  Terms,
   LocationPage,
   ProductsPage,
   BestSellingPage,
@@ -99,7 +101,7 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/careers" element={<CareerPage />} />
-        <Route path="/location" element={<LocationPage />} />
+        <Route path="/contact" element={<LocationPage />} />
         <Route path="/sign-up" element={<SignupPage />} />
         <Route path="/activation/:activation_token" element={<ActivationPage />} />
         <Route path="/seller/activation/:activation_token" element={<SellerActivationPage />} />
@@ -108,6 +110,8 @@ const App = () => {
         <Route path="/best-selling" element={<BestSellingPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/faq" element={<FAQPage />} />
+        <Route path="/policy" element={<Policy />} />
+        <Route path="/terms" element={<Terms />} />
         <Route
           path="/checkout"
           element={

@@ -128,7 +128,7 @@ const Login = () => {
               </button>
             </div>
             <div className={`${styles.noramlFlex} w-full`}>
-              <h4>Not have any account?</h4>
+              <h4>Don't have any account?</h4>
               <Link to="/sign-up" className="text-blue-600 pl-2">
                 Sign Up
               </Link>

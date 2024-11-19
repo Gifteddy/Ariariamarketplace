@@ -77,7 +77,7 @@ const Footer = () => {
         </ul>
 
         <ul className="text-center sm:text-start">
-          <h1 className="mb-1 font-semibold">Shop</h1>
+          <h1 className="mb-1 font-semibold">Explore</h1>
           {footercompanyLinks.map((link,index) => (
             <li key={index}>
               <Link
@@ -100,10 +100,10 @@ const Footer = () => {
          text-center pt-2 text-gray-400 text-sm pb-8"
       >
         <span>© 2024 Abanaijamade. All rights reserved.</span>
-        <span>Terms · Privacy Policy</span>
+        <span><a href="/terms">Terms</a> · <a href="/policy">Privacy Policy</a></span>
         <div className="sm:block flex items-center justify-center w-full">
           <img
-            src="https://hamart-shop.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Ffooter-payment.a37c49ac.png&w=640&q=75"
+            src="https://th.bing.com/th/id/OIP.U5zrNL2JKAAYJSrYITOvaAAAAA?w=268&h=90&c=7&r=0&o=5&pid=1.7"
             alt=""
           />
         </div>

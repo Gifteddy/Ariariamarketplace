@@ -641,14 +641,19 @@ export const navItems = [
       name: "About us",
       link: "/about"
     },
+
+    {
+      name: "Contact us",
+      link: "/contact"
+    },
     /*{
       name: "Careers",
       link: "/careers"
     },*/
     
     {
-      name: "Contact Us",
-      link: "/contact"
+      name: "Best Selling",
+      link: "/best-selling",
     },
 
     {
@@ -666,20 +671,17 @@ export const navItems = [
   ];
   
   export const footercompanyLinks = [
-    {
-      name: "Electonics",
+     {
+      name: "Home",
+      link: "/",
     },
     {
-      name: "Fashion",
+      name: "Products",
+      link: "/products",
     },
     {
-      name: "Food & Beverages",
-    },
-    {
-      name: "Business and Services",
-    },
-    {
-      name: "Others",
+      name: "Events",
+      link: "/events",
     },
   ];
   

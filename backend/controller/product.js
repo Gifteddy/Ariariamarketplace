@@ -1,5 +1,8 @@
 const express = require("express");
-const bodyParser = require("body-parser"); // Import body-parser for handling larger payloads
+const bodyParser = require("body-parser");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 const { isSeller, isAuthenticated, isAdmin } = require("../middleware/auth");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const router = express.Router();
@@ -10,57 +13,90 @@ const cloudinary = require("cloudinary");
 const ErrorHandler = require("../utils/ErrorHandler");
 
 // Increase payload size limit to 50MB
-router.use(bodyParser.json({ limit: '100mb' }));
-router.use(bodyParser.urlencoded({ limit: '100mb', extended: true }));
+router.use(bodyParser.json({ limit: "100mb" }));
+router.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
+
+// Multer configuration
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = "uploads/";
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir);
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = `${Date.now()}-${file.originalname}`;
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max file size
+  fileFilter: (req, file, cb) => {
+    const fileTypes = /jpeg|jpg|png|gif/;
+    const extName = fileTypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
+    const mimeType = fileTypes.test(file.mimetype);
+
+    if (extName && mimeType) {
+      cb(null, true);
+    } else {
+      cb(new ErrorHandler("Only image files are allowed!", 400));
+    }
+  },
+});
 
 // Create product
 router.post(
   "/create-product",
+  upload.array("images", 5), // Accept up to 5 images
   catchAsyncErrors(async (req, res, next) => {
     try {
       const shopId = req.body.shopId;
       const shop = await Shop.findById(shopId);
+
       if (!shop) {
         return next(new ErrorHandler("Shop Id is invalid!", 400));
-      } else {
-        let images = [];
-
-        if (typeof req.body.images === "string") {
-          images.push(req.body.images);
-        } else {
-          images = req.body.images;
-        }
-
-        const imagesLinks = [];
-
-        for (let i = 0; i < images.length; i++) {
-          const result = await cloudinary.v2.uploader.upload(images[i], {
-            folder: "products",
-            transformation: [
-              { width: 200, height: 200, crop: "limit" }, // Resize to 800x800 max
-              { quality: "auto" } // Auto quality to compress the image
-            ],
-          });
-
-          imagesLinks.push({
-            public_id: result.public_id,
-            url: result.secure_url,
-          });
-        }
-
-        const productData = req.body;
-        productData.images = imagesLinks;
-        productData.shop = shop;
-
-        const product = await Product.create(productData);
-
-        res.status(201).json({
-          success: true,
-          product,
-        });
       }
+
+      const imagesLinks = [];
+      const files = req.files;
+
+      for (const file of files) {
+        const result = await cloudinary.v2.uploader.upload(file.path, {
+          folder: "products",
+          transformation: [
+            { width: 200, height: 200, crop: "limit" },
+            { quality: "auto" },
+          ],
+        });
+
+        imagesLinks.push({
+          public_id: result.public_id,
+          url: result.secure_url,
+        });
+
+        // Remove file from local uploads after uploading to Cloudinary
+        fs.unlinkSync(file.path);
+      }
+
+      const productData = {
+        ...req.body,
+        images: imagesLinks,
+        shop,
+      };
+
+      const product = await Product.create(productData);
+
+      res.status(201).json({
+        success: true,
+        product,
+      });
     } catch (error) {
-      return next(new ErrorHandler(error, 400));
+      return next(new ErrorHandler(error.message, 500));
     }
   })
 );
@@ -94,6 +130,7 @@ router.delete(
         return next(new ErrorHandler("Product is not found with this id", 404));
       }
 
+      // Remove images from Cloudinary
       for (let i = 0; i < product.images.length; i++) {
         await cloudinary.v2.uploader.destroy(product.images[i].public_id);
       }

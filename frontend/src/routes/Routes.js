@@ -20,6 +20,8 @@ import UserInbox from "../pages/UserInbox.jsx";
 import AboutUs from "../pages/AboutUs"
 import CareerPage from "../pages/CareerPage"
 import LocationPage from "../pages/Location"
+import Policy from "../pages/Policy"
+import Terms from "../pages/Terms"
 
 export { 
     LoginPage,
@@ -35,6 +37,8 @@ export {
     OrderSuccessPage,
     ProductDetailsPage,
     ProfilePage,
+    Policy,
+    Terms,
     ShopCreatePage,
     SellerActivationPage,
     ShopLoginPage,
