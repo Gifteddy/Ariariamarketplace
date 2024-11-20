@@ -6,15 +6,15 @@ const fs = require("fs");
 const { isSeller, isAuthenticated, isAdmin } = require("../middleware/auth");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const router = express.Router();
-const Product = require("../model/product");
+const Product = require ("../model/product");
 const Order = require("../model/order");
 const Shop = require("../model/shop");
 const cloudinary = require("cloudinary");
 const ErrorHandler = require("../utils/ErrorHandler");
 
 // Increase payload size limit to 50MB
-router.use(bodyParser.json({ limit: "100mb" }));
-router.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
+router.use(bodyParser.json({ limit: "50mb" }));
+router.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 // Multer configuration
 const storage = multer.diskStorage({
@@ -124,28 +124,49 @@ router.delete(
   isSeller,
   catchAsyncErrors(async (req, res, next) => {
     try {
+      console.log("Received request to delete product with ID:", req.params.id);
+
       const product = await Product.findById(req.params.id);
 
       if (!product) {
-        return next(new ErrorHandler("Product is not found with this id", 404));
+        console.log("Product not found with ID:", req.params.id);
+        return next(new ErrorHandler("Product is not found with this ID", 404));
+      }
+
+      console.log("Product found:", product);
+
+      // Validate images array
+      if (!Array.isArray(product.images)) {
+        console.error("Invalid images data for product:", product.images);
+        return next(new ErrorHandler("Product images data is invalid", 400));
       }
 
       // Remove images from Cloudinary
       for (let i = 0; i < product.images.length; i++) {
-        await cloudinary.v2.uploader.destroy(product.images[i].public_id);
+        try {
+          console.log("Deleting image with public_id:", product.images[i].public_id);
+          await cloudinary.v2.uploader.destroy(product.images[i].public_id);
+        } catch (err) {
+          console.error("Error deleting image from Cloudinary:", err);
+        }
       }
 
-      await product.remove();
+      // Delete product from the database
+      await Product.deleteOne({ _id: req.params.id });
 
-      res.status(201).json({
+      console.log("Product deleted successfully with ID:", req.params.id);
+
+      res.status(200).json({
         success: true,
-        message: "Product Deleted successfully!",
+        message: "Product deleted successfully!",
       });
     } catch (error) {
-      return next(new ErrorHandler(error, 400));
+      console.error("Internal Server Error:", error);
+      return next(new ErrorHandler("Internal Server Error", 500));
     }
   })
 );
+
 
 // Get all products
 router.get(
