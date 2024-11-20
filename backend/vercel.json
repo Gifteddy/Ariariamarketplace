@@ -1,15 +1,10 @@
 {
     "version": 2,
-    "name": "e-shop-tutorial",
-    "builds": [
-      { "src": "server.js", "use": "@vercel/node" }
+    "name":"e-shop-tutorial",
+    "builds":[
+        {"src":"server.js","use":"@vercel/node"}
     ],
-    "routes": [
-      { "src": "/api/(.*)", "dest": "/server.js" }
-    ],
-    "cors": {
-      "enabled": true,
-      "origins": ["https://www.ariariamarketplace.com.ng"]
-    }
-  }
-  
+    "routes":[
+        {"src":"/(.*)","dest":"/server.js"}
+    ]
+}
