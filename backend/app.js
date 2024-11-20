@@ -15,9 +15,9 @@ app.use(
     origin: 'https://www.ariariamarketplace.com.ng',
     //origin: 'https://ariariamarketplace.vercel.app',
     //origin: 'http://localhost:3000'
-    credentials: true, // Allow cookies and credentials
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+  credentials: true,  // Allow cookies, headers, etc.
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Allow these methods
+  allowedHeaders: ['Content-Type', 'Authorization']  // Specify the allowed headers
   })
 );
 

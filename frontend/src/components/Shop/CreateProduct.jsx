@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createProduct } from "../../redux/actions/product";
-import { categoriesData } from "../../static/data";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const CreateProduct = () => {
   const { seller } = useSelector((state) => state.seller);
@@ -38,7 +37,7 @@ const CreateProduct = () => {
     setImages(files); // Store the files directly
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newForm = new FormData();
@@ -59,8 +58,28 @@ const CreateProduct = () => {
     newForm.append("stock", stock);
     newForm.append("shopId", seller._id);
 
-    // Dispatch action to create product
-    dispatch(createProduct(newForm)); // Pass the FormData to the action
+    // Perform Axios POST request to the backend API
+    try {
+      const response = await axios.post(
+        "https://ariariamarketplacebackend.vercel.app/api/v2/product/create-product", 
+        newForm,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data", // Required for file uploads
+          },
+        }
+      );
+      // Check for success response from backend
+      if (response.data.success) {
+        toast.success("Product created successfully!");
+        navigate("/dashboard");
+        window.location.reload();
+      }
+    } catch (err) {
+      console.error("Error creating product:", err);
+      toast.error("Error creating product");
+    }
   };
 
   return (
@@ -112,6 +131,7 @@ const CreateProduct = () => {
             }}
           >
             <option value="">Choose a category</option>
+            {/* Assuming categoriesData is available */}
             {categoriesData.map((i) => (
               <option value={i.title} key={i.id}>
                 {i.title}
