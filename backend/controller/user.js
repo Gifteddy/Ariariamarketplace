@@ -54,8 +54,8 @@ router.post(
       // Generate activation token
       const activationToken = createActivationToken(user);
       
-      const activationUrl = `https://www.ariariamarketplace.com.ng/activation/${activationToken}`;
-     //const activationUrl = `https://ariariamarketplace.vercel.app/activation/${activationToken}`;
+      //const activationUrl = `https://www.ariariamarketplace.com.ng/activation/${activationToken}`;
+     const activationUrl = `https://ariariamarketplace.vercel.app/activation/${activationToken}`;
      //const activationUrl = `http://localhost:3000/activation/${activationToken}`;
 
       try {
