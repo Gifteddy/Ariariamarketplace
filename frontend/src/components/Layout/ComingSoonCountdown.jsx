@@ -57,7 +57,7 @@ const ComingSoonCountdown = ({ targetDate }) => {
                 {timerComponents}
               </div>
             ) : (
-              <span>Hurray!! Ariariamarketplace is Live Now!</span>
+              <span>Hurray!!! Ariariamarketplace is Live Now!</span>
             )}
           </div>
         </div>
