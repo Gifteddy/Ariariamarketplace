@@ -168,6 +168,8 @@ router.delete(
 );
 
 
+
+
 // Get all products
 router.get(
   "/get-all-products",
