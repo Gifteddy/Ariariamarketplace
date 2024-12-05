@@ -318,7 +318,7 @@ const CartData = ({
     </div>
     <br />
     <div className="flex justify-between">
-      <h3 className="text-[16px] font-[400] text-[#000000a4]">Shipping:</h3>
+      <h3 className="text-[16px] font-[400] text-[#000000a4]">Service charge:</h3>
       <h5 className="text-[18px] font-[600]">₦{shipping.toFixed(2)}</h5>
     </div>
     <br />

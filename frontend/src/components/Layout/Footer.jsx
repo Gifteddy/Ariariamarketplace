@@ -45,19 +45,28 @@ const Footer = () => {
           <br />
           <p>Bringing unique value to many exceptional products.</p>
           <div className="flex items-center mt-[15px]">
-            <AiFillFacebook size={25} className="cursor-pointer" />
-            <AiOutlineTwitter
-              size={25}
-              style={{ marginLeft: "15px", cursor: "pointer" }}
-            />
-            <AiFillInstagram
-              size={25}
-              style={{ marginLeft: "15px", cursor: "pointer" }}
-            />
-            <AiFillYoutube
-              size={25}
-              style={{ marginLeft: "15px", cursor: "pointer" }}
-            />
+          <a 
+  href="https://www.instagram.com/ariariamarketplace" 
+  target="_blank" 
+  rel="noopener noreferrer"
+>
+  <AiFillInstagram
+    size={25}
+    style={{ marginLeft: "15px", cursor: "pointer" }}
+  />
+</a>
+
+<a 
+  href="https://www.facebook.com/ariariamarketplace.com.ng?mibextid=ZbWKwL" 
+  target="_blank" 
+  rel="noopener noreferrer"
+>
+  <AiFillFacebook
+    size={25}
+    style={{ marginLeft: "15px", cursor: "pointer" }}
+  />
+</a>
+
           </div>
         </ul>
 

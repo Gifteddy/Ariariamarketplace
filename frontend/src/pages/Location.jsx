@@ -14,12 +14,12 @@ const LocationPage = () => {
           <h2 style={styles.locationHeader}>Ariaria Marketplace</h2>
           <p style={styles.locationDetails}>
             <FaMapMarkerAlt style={styles.icon} />
-            123 Market St, Suite 100<br />
-            Cityville, State, 12345
+            206 Faulks by Samek Junction<br />
+            Aba, Abia State
           </p>
           <p style={styles.contactDetails}>
-            <FaPhone style={styles.icon} /> (123) 456-7890<br />
-            <FaEnvelope style={styles.icon} /> contact@ariariamarketplace.com
+            <FaPhone style={styles.icon} /> +2347061153413, 08037908071<br />
+            <FaEnvelope style={styles.icon} /> info@ariariamarketplace.com.ng
           </p>
         </div>
       </div>
@@ -29,7 +29,7 @@ const LocationPage = () => {
       <div style={styles.mapContainer}>
         <iframe
           title="Location Map"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509949!2d144.95373531568392!3d-37.81720997975125!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f44c6f9%3A0x7d2be86b88f2f72!2sAriaria%20Marketplace!5e0!3m2!1sen!2sng!4v1625652838973!5m2!1sen!2sng"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3973.936918648082!2d7.336561474443383!3d5.1138695948631945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10429befa40451bd%3A0x5c902ac8564193de!2s206%20Faulks%20Rd%2C%20Ariaria%2C%20Aba%20450102%2C%20Abia!5e0!3m2!1sen!2sng!4v1733219515610!5m2!1sen!2sng"
           width="100%"
           height="450"
           style={styles.map}
