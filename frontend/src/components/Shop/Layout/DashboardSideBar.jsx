@@ -144,7 +144,7 @@ const DashboardSideBar = ({ active }) => {
         </Link>
       </div>
 
-      <div className="w-full flex items-center p-4">
+      {/*<div className="w-full flex items-center p-4">
         <Link to="/dashboard-coupons" className="w-full flex items-center">
           <AiOutlineGift
             size={30}
@@ -158,7 +158,7 @@ const DashboardSideBar = ({ active }) => {
             Discount Codes
           </h5>
         </Link>
-      </div>
+      </div>*/}
 
       <div className="w-full flex items-center p-4">
         <Link to="/dashboard-refunds" className="w-full flex items-center">
