@@ -29,6 +29,7 @@ import {
 import {
   ShopDashboardPage,
   ShopCreateProduct,
+  ShopEditProduct,
   ShopAllProducts,
   ShopCreateEvents,
   ShopAllEvents,
@@ -194,6 +195,14 @@ const App = () => {
           element={
             <SellerProtectedRoute>
               <ShopCreateProduct />
+            </SellerProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-product/:id"
+          element={
+            <SellerProtectedRoute>
+              <ShopEditProduct />
             </SellerProtectedRoute>
           }
         />

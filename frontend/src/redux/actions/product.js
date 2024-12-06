@@ -44,6 +44,55 @@ export const createProduct =
     }
   };
 
+
+// Edit product action
+export const editProduct = (id, updatedData, images) => async (dispatch) => {
+  try {
+    dispatch({
+      type: "editProductRequest",
+    });
+
+    // Create FormData to handle images and product updates
+    const formData = new FormData();
+    Object.keys(updatedData).forEach((key) => {
+      formData.append(key, updatedData[key]);
+    });
+
+    // Append images if any are provided
+    if (images && images.length > 0) {
+      images.forEach((image) => {
+        formData.append("images", image);
+      });
+    }
+
+    // Send PUT request to backend to update the product
+    const { data } = await axios.put(
+      `${server}/product/edit-product/${id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+
+    // Dispatch success action with updated product data
+    dispatch({
+      type: "editProductSuccess",
+      payload: data.product,
+    });
+  } catch (error) {
+    // Dispatch fail action with error message if the request fails
+    dispatch({
+      type: "editProductFail",
+      payload: error.response?.data?.message || error.message || "Something went wrong",
+    });
+  }
+};
+
+
+
 // get All Products of a shop
 export const getAllProductsShop = (id) => async (dispatch) => {
   try {

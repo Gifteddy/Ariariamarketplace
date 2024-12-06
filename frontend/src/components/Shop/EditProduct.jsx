@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProductDetails, updateProduct } from "../../redux/actions/product";
+import { editProduct } from "../../redux/actions/product"; // Import the edit product action
 import { categoriesData } from "../../static/data";
 import { toast } from "react-toastify";
 
 const EditProduct = () => {
-  const { productId } = useParams(); // Get the product ID from URL params
-  const { seller } = useSelector((state) => state.seller);
-  const { productDetails, success, error } = useSelector((state) => state.products);
+  const { id } = useParams(); // Get the product ID from the route
+  const { products, success, error } = useSelector((state) => state.products);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [product, setProduct] = useState(null);
   const [images, setImages] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -23,7 +23,23 @@ const EditProduct = () => {
   const [discountPrice, setDiscountPrice] = useState("");
   const [stock, setStock] = useState("");
 
-  // Error and success handling
+  // Load product details from Redux store
+  useEffect(() => {
+    const existingProduct = products?.find((prod) => prod._id === id);
+    if (existingProduct) {
+      setProduct(existingProduct);
+      setName(existingProduct.name);
+      setDescription(existingProduct.description);
+      setCategory(existingProduct.category);
+      setSubcategory(existingProduct.subcategory || "");
+      setTags(existingProduct.tags || "");
+      setOriginalPrice(existingProduct.originalPrice);
+      setDiscountPrice(existingProduct.discountPrice);
+      setStock(existingProduct.stock);
+      setImages(existingProduct.images || []);
+    }
+  }, [products, id]);
+
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -31,62 +47,42 @@ const EditProduct = () => {
     if (success) {
       toast.success("Product updated successfully!");
       navigate("/dashboard");
+      window.location.reload();
     }
-  }, [dispatch, error, success, navigate]);
+  }, [error, success, navigate]);
 
-  // Fetch product details when the component mounts
-  useEffect(() => {
-    if (productId) {
-      dispatch(getProductDetails(productId));
-    }
-  }, [dispatch, productId]);
-
-  // Populate form fields with fetched product details
-  useEffect(() => {
-    if (productDetails) {
-      setName(productDetails.name);
-      setDescription(productDetails.description);
-      setCategory(productDetails.category);
-      setSubcategory(productDetails.subcategory);
-      setTags(productDetails.tags);
-      setOriginalPrice(productDetails.originalPrice);
-      setDiscountPrice(productDetails.discountPrice);
-      setStock(productDetails.stock);
-    }
-  }, [productDetails]);
-
-  // Handle image selection
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setImages(files); // Store the files directly
+    setImages(files);
   };
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Create FormData to handle file uploads
     const updatedForm = new FormData();
 
-    // Append the images to FormData
+    // Append images to FormData
     images.forEach((image) => {
-      updatedForm.append("images", image); // The 'images' field is expected by the backend
+      updatedForm.append("images", image);
     });
 
     // Append other form fields to FormData
     updatedForm.append("name", name);
     updatedForm.append("description", description);
     updatedForm.append("category", category);
-    updatedForm.append("subcategory", subcategory); // Append subcategory
+    updatedForm.append("subcategory", subcategory);
     updatedForm.append("tags", tags);
     updatedForm.append("originalPrice", originalPrice);
     updatedForm.append("discountPrice", discountPrice);
     updatedForm.append("stock", stock);
-    updatedForm.append("shopId", seller._id);
 
-    // Dispatch action to update the product
-    dispatch(updateProduct(productId, updatedForm)); // Pass the FormData to the action
+    // Dispatch the edit product action with id
+    dispatch(editProduct(id, updatedForm)); // Pass id separately
   };
+
+  if (!product) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="w-[90%] 800px:w-[50%] bg-white shadow h-[80vh] rounded-[4px] p-3 overflow-y-scroll">
@@ -113,8 +109,9 @@ const EditProduct = () => {
           </label>
           <textarea
             cols="30"
-            required
             rows="8"
+            required
+            type="text"
             name="description"
             value={description}
             className="mt-2 appearance-none block w-full pt-2 px-3 border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -144,7 +141,7 @@ const EditProduct = () => {
           </select>
         </div>
         <br />
-        {category && ( // Show subcategory dropdown only if a category is selected
+        {category && (
           <div>
             <label className="pb-2">
               Subcategory <span className="text-red-500">*</span>
@@ -157,7 +154,7 @@ const EditProduct = () => {
               <option value="">Choose a subcategory</option>
               {categoriesData
                 .find((cat) => cat.title === category)
-                .subCategories.map((sub) => (
+                ?.subCategories.map((sub) => (
                   <option value={sub.title} key={sub.id}>
                     {sub.title}
                   </option>
@@ -233,24 +230,23 @@ const EditProduct = () => {
             <label htmlFor="upload">
               <AiOutlinePlusCircle size={30} className="mt-3" color="#555" />
             </label>
-            {images.map((i, index) => (
+            {Array.from(images).map((image, index) => (
               <img
-                src={URL.createObjectURL(i)}
+                src={image.url || URL.createObjectURL(image)}
                 key={index}
                 alt="Preview"
                 className="h-[120px] w-[120px] object-cover m-2"
               />
             ))}
           </div>
-          <br />
-          <div>
-            <input
-              type="submit"
-              value="Update"
-              className="mt-2 cursor-pointer appearance-none text-center block w-full px-3 h-[35px] border border-gray-300 rounded-[3px] placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            />
-          </div>
         </div>
+        <br />
+        <button
+          type="submit"
+          className="w-full bg-black text-white py-2 rounded-[5px]"
+        >
+          Update Product
+        </button>
       </form>
     </div>
   );

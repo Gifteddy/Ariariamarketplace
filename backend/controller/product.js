@@ -263,4 +263,73 @@ router.get(
   })
 );
 
+// Edit product
+router.put(
+  "/edit-product/:id",
+  isSeller, // Ensure the user has seller permissions
+  upload.array("images", 5), // Allow up to 5 images for editing
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const productId = req.params.id;
+      const product = await Product.findById(productId);
+
+      if (!product) {
+        return next(new ErrorHandler("Product not found with this ID!", 404));
+      }
+
+      // Update product fields
+      const updatedData = { ...req.body };
+
+      // Handle new image uploads if provided
+      if (req.files && req.files.length > 0) {
+        // Remove existing images from Cloudinary
+        for (const img of product.images) {
+          try {
+            await cloudinary.v2.uploader.destroy(img.public_id);
+          } catch (err) {
+            console.error("Error deleting image from Cloudinary:", err);
+          }
+        }
+
+        // Upload new images
+        const newImages = [];
+        for (const file of req.files) {
+          const result = await cloudinary.v2.uploader.upload(file.path, {
+            folder: "products",
+            transformation: [
+              { width: 200, height: 200, crop: "limit" },
+              { quality: "auto" },
+            ],
+          });
+
+          newImages.push({
+            public_id: result.public_id,
+            url: result.secure_url,
+          });
+
+          // Remove file from local uploads after uploading to Cloudinary
+          fs.unlinkSync(file.path);
+        }
+
+        updatedData.images = newImages; // Update the images field in the database
+      }
+
+      // Update the product in the database
+      const updatedProduct = await Product.findByIdAndUpdate(productId, updatedData, {
+        new: true,
+        runValidators: true,
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Product updated successfully!",
+        product: updatedProduct,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
+
+
 module.exports = router;
