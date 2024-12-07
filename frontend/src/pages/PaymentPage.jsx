@@ -3,6 +3,7 @@ import CheckoutSteps from '../components/Checkout/CheckoutSteps';
 import Footer from '../components/Layout/Footer';
 import Header from '../components/Layout/Header';
 import Payment from "../components/Payment/Payment"; // Import Payment component
+import FooterNav from '../components/Layout/FooterNav';
 
 const PaymentPage = () => {
   return (
@@ -15,6 +16,7 @@ const PaymentPage = () => {
        <br />
        <br />
        <Footer />
+       <FooterNav />
     </div>
   )
 }

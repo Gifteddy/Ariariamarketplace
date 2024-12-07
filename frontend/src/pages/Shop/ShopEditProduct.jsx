@@ -2,6 +2,7 @@ import React from 'react'
 import DashboardHeader from '../../components/Shop/Layout/DashboardHeader'
 import DashboardSideBar from '../../components/Shop/Layout/DashboardSideBar'
 import EditProduct from "../../components/Shop/EditProduct";
+import FooterNav from '../../components/Layout/FooterNav';
 
 const ShopEditProduct = () => {
   return (
@@ -14,7 +15,8 @@ const ShopEditProduct = () => {
             <div className="w-full justify-center flex">
                 <EditProduct />
             </div>
-          </div>
+          </div><br />
+          <FooterNav />
     </div>
   )
 }

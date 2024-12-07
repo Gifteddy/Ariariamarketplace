@@ -1,4 +1,5 @@
 import React from "react";
+import FooterNav from "../components/Layout/FooterNav";
 
 const Policy = () => {
   return (
@@ -228,6 +229,7 @@ const Policy = () => {
           .
         </li>
       </ul>
+      <FooterNav />
     </div>
   );
 };

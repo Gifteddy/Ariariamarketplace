@@ -3,6 +3,7 @@ import Footer from "../../components/Layout/Footer";
 import ShopSettings from "../../components/Shop/ShopSettings";
 import DashboardHeader from "../../components/Shop/Layout/DashboardHeader";
 import DashboardSideBar from "../../components/Shop/Layout/DashboardSideBar";
+import FooterNav from "../../components/Layout/FooterNav";
 
 const ShopSettingsPage = () => {
   return (
@@ -14,6 +15,7 @@ const ShopSettingsPage = () => {
         </div>
         <ShopSettings />
       </div>
+      <FooterNav />
     </div>
   );
 };

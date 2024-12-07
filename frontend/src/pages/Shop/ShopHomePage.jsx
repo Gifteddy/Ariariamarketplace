@@ -2,6 +2,7 @@ import React from 'react'
 import styles from '../../styles/styles'
 import ShopInfo from "../../components/Shop/ShopInfo";
 import ShopProfileData from "../../components/Shop/ShopProfileData";
+import FooterNav from '../../components/Layout/FooterNav';
 
 const ShopHomePage = () => {
   return (
@@ -14,6 +15,7 @@ const ShopHomePage = () => {
             <ShopProfileData isOwner={true} />
           </div>
          </div>
+         <FooterNav />
     </div>
   )
 }

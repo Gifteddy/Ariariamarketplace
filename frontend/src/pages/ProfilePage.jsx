@@ -5,6 +5,7 @@ import Loader from "../components/Layout/Loader";
 import ProfileSideBar from "../components/Profile/ProfileSidebar";
 import ProfileContent from "../components/Profile/ProfileContent";
 import { useSelector } from "react-redux";
+import FooterNav from "../components/Layout/FooterNav";
 
 const ProfilePage = () => {
   const { loading } = useSelector((state) => state.user);
@@ -25,7 +26,9 @@ const ProfilePage = () => {
           </div>
         </>
       )}
+      <FooterNav />
     </div>
+    
   );
 };
 

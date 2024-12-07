@@ -3,19 +3,43 @@ const ErrorHandler = require("../utils/ErrorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const express = require("express");
 const cloudinary = require("cloudinary");
+const multer = require("multer");
 const router = express.Router();
 
-// create new message
+// Set up multer storage and file filter
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Set the destination folder for file uploads
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname); // Give the file a unique name
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true); // Accept the file
+  } else {
+    cb(new ErrorHandler("Only image files are allowed!", 400), false); // Reject non-image files
+  }
+};
+
+const upload = multer({ storage, fileFilter });
+
+// create new message with file upload
 router.post(
   "/create-new-message",
+  upload.single("images"),  // Handle single image upload (adjust the key to your form field)
   catchAsyncErrors(async (req, res, next) => {
     try {
       const messageData = req.body;
 
-      if (req.body.images) {
-        const myCloud = await cloudinary.v2.uploader.upload(req.body.images, {
+      // If there's an image, upload it to Cloudinary
+      if (req.file) {
+        const myCloud = await cloudinary.v2.uploader.upload(req.file.path, {
           folder: "messages",
         });
+
         messageData.images = {
           public_id: myCloud.public_id,
           url: myCloud.url,
@@ -54,7 +78,7 @@ router.get(
         conversationId: req.params.id,
       });
 
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         messages,
       });

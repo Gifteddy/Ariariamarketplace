@@ -2,6 +2,7 @@ import React from 'react'
 import DashboardHeader from '../../components/Shop/Layout/DashboardHeader'
 import DashboardSideBar from '../../components/Shop/Layout/DashboardSideBar'
 import AllEvents from "../../components/Shop/AllEvents";
+import FooterNav from '../../components/Layout/FooterNav';
 
 const ShopAllEvents = () => {
   return (
@@ -15,6 +16,7 @@ const ShopAllEvents = () => {
                 <AllEvents />
             </div>
           </div>
+          <FooterNav />
     </div>
   )
 }

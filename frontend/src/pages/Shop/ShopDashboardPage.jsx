@@ -2,6 +2,7 @@ import React from "react";
 import DashboardHeader from "../../components/Shop/Layout/DashboardHeader";
 import DashboardSideBar from "../../components/Shop/Layout/DashboardSideBar";
 import DashboardHero from "../../components/Shop/DashboardHero";
+import FooterNav from "../../components/Layout/FooterNav";
 
 const ShopDashboardPage = () => {
   return (
@@ -13,6 +14,7 @@ const ShopDashboardPage = () => {
             </div>
             <DashboardHero />
           </div>
+          <FooterNav />
         </div>
   );
 };

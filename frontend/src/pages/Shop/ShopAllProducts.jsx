@@ -2,6 +2,7 @@ import React from 'react'
 import DashboardHeader from '../../components/Shop/Layout/DashboardHeader'
 import DashboardSideBar from '../../components/Shop/Layout/DashboardSideBar'
 import AllProducts from "../../components/Shop/AllProducts";
+import FooterNav from '../../components/Layout/FooterNav';
 
 const ShopAllProducts = () => {
   return (
@@ -15,6 +16,7 @@ const ShopAllProducts = () => {
                 <AllProducts />
             </div>
           </div>
+          <FooterNav />
     </div>
   )
 }

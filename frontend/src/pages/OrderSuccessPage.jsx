@@ -3,6 +3,7 @@ import Footer from "../components/Layout/Footer";
 import Header from "../components/Layout/Header";
 import Lottie from "react-lottie";
 import animationData from "../Assests/animations/107043-success.json";
+import FooterNav from "../components/Layout/FooterNav";
 
 const OrderSuccessPage = () => {
   return (
@@ -10,6 +11,7 @@ const OrderSuccessPage = () => {
       <Header />
       <Success />
       <Footer />
+      <FooterNav />
     </div>
   );
 };

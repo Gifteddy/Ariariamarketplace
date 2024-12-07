@@ -10,6 +10,7 @@ import Footer from "../components/Layout/Footer";
 
 // Import the ComingSoonCountdown component
 import ComingSoonCountdown from "../components/Layout/ComingSoonCountdown"; 
+import FooterNav from '../components/Layout/FooterNav';
 
 const HomePage = () => {
   // Set a target date for the countdown
@@ -29,6 +30,7 @@ const HomePage = () => {
       <FeaturedProduct />
       <Sponsored />
       <Footer />
+      <FooterNav />
     </div>
   );
 }

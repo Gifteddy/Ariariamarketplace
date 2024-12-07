@@ -2,6 +2,7 @@ import React from 'react'
 import DashboardHeader from '../../components/Shop/Layout/DashboardHeader'
 import CreateEvent from "../../components/Shop/CreateEvent";
 import DashboardSideBar from '../../components/Shop/Layout/DashboardSideBar';
+import FooterNav from '../../components/Layout/FooterNav';
 
 const ShopCreateEvents = () => {
   return (
@@ -14,7 +15,8 @@ const ShopCreateEvents = () => {
       <div className="w-full justify-center flex">
         <CreateEvent />
       </div>
-    </div>
+    </div><br />
+    <FooterNav />
     </div>
   )
 }

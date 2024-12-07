@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Footer from "../components/Layout/Footer";
 import Header from "../components/Layout/Header";
 import styles from "../styles/styles";
+import FooterNav from "../components/Layout/FooterNav";
 
 const FAQPage = () => {
   return (
@@ -9,6 +10,7 @@ const FAQPage = () => {
       <Header activeHeading={5} />
       <Faq />
       <Footer />
+      <FooterNav />
     </div>
   );
 };

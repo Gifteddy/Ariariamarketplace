@@ -5,6 +5,7 @@ import Header from "../components/Layout/Header";
 import ProductDetails from "../components/Products/ProductDetails";
 import SuggestedProduct from "../components/Products/SuggestedProduct";
 import { useSelector } from "react-redux";
+import FooterNav from "../components/Layout/FooterNav";
 
 const ProductDetailsPage = () => {
   const { allProducts } = useSelector((state) => state.products);
@@ -36,6 +37,7 @@ const ProductDetailsPage = () => {
           )
         }
       <Footer />
+      <FooterNav />
     </div>
   );
 };

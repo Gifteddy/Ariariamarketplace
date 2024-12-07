@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Header from "../components/Layout/Header";
 import Loader from "../components/Layout/Loader";
+import FooterNav from "../components/Layout/FooterNav";
 import EventCard from "../components/Events/EventCard";
 import styles from "../styles/styles";
 
@@ -31,6 +32,9 @@ const EventsPage = () => {
           </div>
         </div>
       )}
+
+      
+<FooterNav />
     </>
   );
 };

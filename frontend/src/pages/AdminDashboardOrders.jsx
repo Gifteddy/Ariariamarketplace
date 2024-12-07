@@ -4,6 +4,7 @@ import AdminSideBar from "../components/Admin/Layout/AdminSideBar";
 import { DataGrid } from "@material-ui/data-grid";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrdersOfAdmin } from "../redux/actions/order";
+import FooterNav from "../components/Layout/FooterNav";
 
 const AdminDashboardOrders = () => {
   const dispatch = useDispatch();
@@ -87,6 +88,7 @@ const AdminDashboardOrders = () => {
           </div>
         </div>
       </div>
+      <FooterNav />
     </div>
   );
 };

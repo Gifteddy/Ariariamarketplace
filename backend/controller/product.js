@@ -266,23 +266,26 @@ router.get(
 // Edit product
 router.put(
   "/edit-product/:id",
-  isSeller, // Ensure the user has seller permissions
-  upload.array("images", 5), // Allow up to 5 images for editing
+  isSeller,
+  upload.array("images", 5),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const productId = req.params.id;
-      const product = await Product.findById(productId);
+      console.log("Editing product with ID:", productId);
 
+      const product = await Product.findById(productId);
       if (!product) {
         return next(new ErrorHandler("Product not found with this ID!", 404));
       }
 
+      console.log("Existing product:", product);
+
       // Update product fields
       const updatedData = { ...req.body };
+      console.log("Request body:", req.body);
 
-      // Handle new image uploads if provided
       if (req.files && req.files.length > 0) {
-        // Remove existing images from Cloudinary
+        console.log("New images provided. Processing uploads...");
         for (const img of product.images) {
           try {
             await cloudinary.v2.uploader.destroy(img.public_id);
@@ -291,7 +294,6 @@ router.put(
           }
         }
 
-        // Upload new images
         const newImages = [];
         for (const file of req.files) {
           const result = await cloudinary.v2.uploader.upload(file.path, {
@@ -307,18 +309,20 @@ router.put(
             url: result.secure_url,
           });
 
-          // Remove file from local uploads after uploading to Cloudinary
           fs.unlinkSync(file.path);
         }
 
-        updatedData.images = newImages; // Update the images field in the database
+        updatedData.images = newImages;
       }
 
-      // Update the product in the database
+      console.log("Updated data to be saved:", updatedData);
+
       const updatedProduct = await Product.findByIdAndUpdate(productId, updatedData, {
         new: true,
         runValidators: true,
       });
+
+      console.log("Updated product:", updatedProduct);
 
       res.status(200).json({
         success: true,
@@ -326,10 +330,12 @@ router.put(
         product: updatedProduct,
       });
     } catch (error) {
+      console.error("Error during product update:", error);
       return next(new ErrorHandler(error.message, 500));
     }
   })
 );
+
 
 
 module.exports = router;

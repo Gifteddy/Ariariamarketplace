@@ -52,37 +52,54 @@ export const editProduct = (id, updatedData, images) => async (dispatch) => {
       type: "editProductRequest",
     });
 
-    // Create FormData to handle images and product updates
+    // Create FormData to handle product data and images
     const formData = new FormData();
     Object.keys(updatedData).forEach((key) => {
       formData.append(key, updatedData[key]);
     });
 
+    // Log updated data for debugging
+    console.log("Updated Data:", updatedData);
+
     // Append images if any are provided
     if (images && images.length > 0) {
-      images.forEach((image) => {
+      images.forEach((image, index) => {
         formData.append("images", image);
+        console.log(`Appending image ${index}:`, image);  // Log each image added
       });
     }
 
-    // Send PUT request to backend to update the product
+    // Debug FormData entries
+    console.log("Form Data Entries:");
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);  // Log each formData entry for debugging
+    }
+
+    // Send PUT request to update product
     const { data } = await axios.put(
       `${server}/product/edit-product/${id}`,
       formData,
       {
         headers: {
-          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Pass token from localStorage
+          "Content-Type": "multipart/form-data",  // Required for sending form data
         },
-        withCredentials: true,
+        withCredentials: true,  // Ensure cookies (if needed) are sent with the request
       }
     );
+
+    // Log successful response
+    console.log("Edit Product Success Response:", data);
 
     // Dispatch success action with updated product data
     dispatch({
       type: "editProductSuccess",
-      payload: data.product,
+      payload: data.product,  // Updated product data from the backend
     });
   } catch (error) {
+    // Log error response for debugging
+    console.error("Edit Product Error Response:", error.response?.data);
+
     // Dispatch fail action with error message if the request fails
     dispatch({
       type: "editProductFail",
@@ -90,6 +107,8 @@ export const editProduct = (id, updatedData, images) => async (dispatch) => {
     });
   }
 };
+
+
 
 
 

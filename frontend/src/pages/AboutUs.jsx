@@ -1,4 +1,5 @@
 import React from 'react';
+import FooterNav from '../components/Layout/FooterNav';
 
 const AboutUs = () => {
   return (
@@ -90,6 +91,7 @@ const AboutUs = () => {
           </a>
         </section>
       </div>
+      <FooterNav />
     </div>
   );
 };

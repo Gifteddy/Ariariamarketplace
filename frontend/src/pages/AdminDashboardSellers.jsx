@@ -2,6 +2,7 @@ import React from 'react'
 import AdminHeader from '../components/Layout/AdminHeader'
 import AdminSideBar from '../components/Admin/Layout/AdminSideBar'
 import AllSellers from "../components/Admin/AllSellers";
+import FooterNav from '../components/Layout/FooterNav';
 
 const AdminDashboardSellers = () => {
   return (
@@ -15,6 +16,7 @@ const AdminDashboardSellers = () => {
         <AllSellers />
       </div>
     </div>
+    <FooterNav />
   </div>
   )
 }

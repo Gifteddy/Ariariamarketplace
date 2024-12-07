@@ -6,6 +6,7 @@ import Loader from "../components/Layout/Loader";
 import ProductCard from "../components/Route/ProductCard/ProductCard";
 import styles from "../styles/styles";
 import Footer from "../components/Layout/Footer";
+import FooterNav from "../components/Layout/FooterNav";
 
 const BestSellingPage = () => {
   const [data, setData] = useState([]);
@@ -33,6 +34,7 @@ const BestSellingPage = () => {
         </div>
       </div>
       <Footer />
+      <FooterNav />
     </div>
     )
    }

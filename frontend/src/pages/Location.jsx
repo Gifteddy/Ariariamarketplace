@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaMapMarkerAlt, FaPhone, FaEnvelope } from 'react-icons/fa';
+import FooterNav from '../components/Layout/FooterNav';
 
 const LocationPage = () => {
   return (
@@ -41,6 +42,7 @@ const LocationPage = () => {
       <div style={styles.footer}>
         <p>We look forward to welcoming you to our marketplace!</p>
       </div>
+      <FooterNav />
     </div>
   );
 };

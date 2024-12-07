@@ -6,6 +6,7 @@ import Header from "../components/Layout/Header";
 import Loader from "../components/Layout/Loader";
 import ProductCard from "../components/Route/ProductCard/ProductCard";
 import styles from "../styles/styles";
+import FooterNav from "../components/Layout/FooterNav";
 
 const ProductsPage = () => {
   const [searchParams] = useSearchParams();
@@ -46,6 +47,8 @@ const ProductsPage = () => {
         ) : null}
       </div>
       <Footer />
+      
+      <FooterNav />
     </div>
     )
   }

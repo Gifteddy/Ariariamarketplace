@@ -2,6 +2,7 @@ import React from 'react'
 import DashboardHeader from '../../components/Shop/Layout/DashboardHeader'
 import WithdrawMoney from "../../components/Shop/WithdrawMoney";
 import DashboardSideBar from '../../components/Shop/Layout/DashboardSideBar';
+import FooterNav from '../../components/Layout/FooterNav';
 
 const ShopWithDrawMoneyPage = () => {
   return (
@@ -13,6 +14,7 @@ const ShopWithDrawMoneyPage = () => {
       </div>
        <WithdrawMoney />
     </div>
+    <FooterNav />
   </div>
   )
 }
