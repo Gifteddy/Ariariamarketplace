@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { editProduct } from "../../redux/actions/product"; // Import the edit product action
+import { editProduct } from "../../redux/actions/product";
 import { categoriesData } from "../../static/data";
 import { toast } from "react-toastify";
 
 const EditProduct = () => {
-  const { id } = useParams(); // Get the product ID from the route
+  const { id } = useParams();
   const { products, success, error } = useSelector((state) => state.products);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -40,6 +40,7 @@ const EditProduct = () => {
     }
   }, [products, id]);
 
+  // Success/Error handling
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -51,33 +52,41 @@ const EditProduct = () => {
     }
   }, [error, success, navigate]);
 
+  // Handle image changes
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setImages(files);
+    setImages((prevImages) => [...prevImages, ...files]); // Add new files to the existing images
   };
 
+  // Submit form
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const updatedForm = new FormData();
+    const updatedData = new FormData();
 
-    // Append images to FormData
+    // Append existing and new images
     images.forEach((image) => {
-      updatedForm.append("images", image);
+      if (typeof image === "string") {
+        // Existing image URLs
+        updatedData.append("existingImages", image);
+      } else {
+        // New image files
+        updatedData.append("images", image);
+      }
     });
 
-    // Append other form fields to FormData
-    updatedForm.append("name", name);
-    updatedForm.append("description", description);
-    updatedForm.append("category", category);
-    updatedForm.append("subcategory", subcategory);
-    updatedForm.append("tags", tags);
-    updatedForm.append("originalPrice", originalPrice);
-    updatedForm.append("discountPrice", discountPrice);
-    updatedForm.append("stock", stock);
+    // Append other product data
+    updatedData.append("name", name);
+    updatedData.append("description", description);
+    updatedData.append("category", category);
+    updatedData.append("subcategory", subcategory);
+    updatedData.append("tags", tags);
+    updatedData.append("originalPrice", originalPrice);
+    updatedData.append("discountPrice", discountPrice);
+    updatedData.append("stock", stock);
 
-    // Dispatch the edit product action with id
-    dispatch(editProduct(id, updatedForm)); // Pass id separately
+    // Dispatch the edit product action
+    dispatch(editProduct(id, updatedData));
   };
 
   if (!product) {

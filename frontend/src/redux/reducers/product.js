@@ -9,6 +9,8 @@ const initialState = {
   message: "",
 };
 
+
+
 export const productReducer = createReducer(initialState, {
   // Product creation actions
   productCreateRequest: (state) => {
@@ -62,8 +64,10 @@ export const productReducer = createReducer(initialState, {
     state.isLoading = false;
     state.success = true;
     // Find the product and replace it with the updated product
-    state.products = state.products.map((product) =>
+    state.products = state.products.map(product =>
       product._id === action.payload._id ? action.payload : product
+    
+    
     );
     // Optionally, if you are updating all products globally:
     state.allProducts = state.allProducts.map((product) =>
@@ -74,6 +78,7 @@ export const productReducer = createReducer(initialState, {
     state.isLoading = false;
     state.error = action.payload;
   },
+  
 
   // Get all products (for global list)
   getAllProductsRequest: (state) => {

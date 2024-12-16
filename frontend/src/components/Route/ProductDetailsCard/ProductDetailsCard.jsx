@@ -7,7 +7,6 @@ import {
 } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
-import styles from "../../../styles/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { addTocart } from "../../../redux/actions/cart";
@@ -21,159 +20,145 @@ const ProductDetailsCard = ({ setOpen, data }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
   const [count, setCount] = useState(1);
-  const [click, setClick] = useState(false);
-  //   const [select, setSelect] = useState(false);
+  const [isWishlist, setIsWishlist] = useState(false);
 
-  const handleMessageSubmit = () => {};
-
-  const decrementCount = () => {
-    if (count > 1) {
-      setCount(count - 1);
+  useEffect(() => {
+    if (wishlist && wishlist.find((i) => i._id === data._id)) {
+      setIsWishlist(true);
+    } else {
+      setIsWishlist(false);
     }
-  };
+  }, [wishlist, data._id]);
 
-  const incrementCount = () => {
-    setCount(count + 1);
-  };
+  const decrementCount = () => count > 1 && setCount(count - 1);
+  const incrementCount = () => setCount(count + 1);
 
   const addToCartHandler = (id) => {
     const isItemExists = cart && cart.find((i) => i._id === id);
     if (isItemExists) {
       toast.error("Item already in cart!");
+    } else if (data.stock < count) {
+      toast.error("Product stock limited!");
     } else {
-      if (data.stock < count) {
-        toast.error("Product stock limited!");
-      } else {
-        const cartData = { ...data, qty: count };
-        dispatch(addTocart(cartData));
-        toast.success("Item added to cart successfully!");
-      }
+      const cartData = { ...data, qty: count };
+      dispatch(addTocart(cartData));
+      toast.success("Item added to cart successfully!");
     }
   };
 
-  useEffect(() => {
-    if (wishlist && wishlist.find((i) => i._id === data._id)) {
-      setClick(true);
+  const toggleWishlist = () => {
+    if (isWishlist) {
+      dispatch(removeFromWishlist(data));
     } else {
-      setClick(false);
+      dispatch(addToWishlist(data));
     }
-  }, [wishlist]);
-
-  const removeFromWishlistHandler = (data) => {
-    setClick(!click);
-    dispatch(removeFromWishlist(data));
-  };
-
-  const addToWishlistHandler = (data) => {
-    setClick(!click);
-    dispatch(addToWishlist(data));
+    setIsWishlist(!isWishlist);
   };
 
   return (
-    <div className="bg-[#fff]">
-      {data ? (
-        <div className="fixed w-full h-screen top-0 left-0 bg-[#00000030] z-40 flex items-center justify-center">
-          <div className="w-[90%] 800px:w-[60%] h-[90vh] overflow-y-scroll 800px:h-[75vh] bg-white rounded-md shadow-sm relative p-4">
-            <RxCross1
-              size={30}
-              className="absolute right-3 top-3 z-50"
-              onClick={() => setOpen(false)}
-            />
+    data && (
+      <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-40">
+        <div className="w-full max-w-4xl h-[90vh] overflow-y-auto bg-white rounded-md shadow-lg p-6 relative">
+          <RxCross1
+            size={30}
+            className="absolute right-3 top-3 cursor-pointer"
+            onClick={() => setOpen(false)}
+          />
 
-            <div className="block w-full 800px:flex">
-              <div className="w-full 800px:w-[50%]">
-                <img src={`${data.images && data.images[0]?.url}`} alt="" />
-                <div className="flex">
-                  <Link to={`/shop/preview/${data.shop._id}`} className="flex">
-                    <img
-                      src={`${data.images && data.images[0]?.url}`}
-                      alt=""
-                      className="w-[50px] h-[50px] rounded-full mr-2"
-                    />
-                    <div>
-                      <h3 className={`${styles.shop_name}`}>
-                        {data.shop.name}
-                      </h3>
-                      <h5 className="pb-3 text-[15px]">{data?.ratings} Ratings</h5>
-                    </div>
-                  </Link>
-                </div>
-                <div
-                  className={`${styles.button} bg-[#000] mt-4 rounded-[4px] h-11`}
-                  onClick={handleMessageSubmit}
+          <div className="flex flex-col lg:flex-row">
+            {/* Left Section */}
+            <div className="w-full lg:w-[50%] mb-6 lg:mb-0">
+              <img
+                src={data?.images?.[0]?.url}
+                alt={data.name}
+                className="w-full h-auto object-cover rounded-md"
+              />
+              <div className="mt-4">
+                <Link
+                  to={`/shop/preview/${data.shop._id}`}
+                  className="flex items-center space-x-2"
                 >
-                  <span className="text-[#fff] flex items-center">
-                    Send Message <AiOutlineMessage className="ml-1" />
-                  </span>
-                </div>
-                <h5 className="text-[16px] text-[red] mt-5">(50) Sold out</h5>
+                  <img
+                    src={data?.images?.[0]?.url}
+                    alt="Shop"
+                    className="w-12 h-12 rounded-full"
+                  />
+                  <div>
+                    <h3 className="text-lg font-semibold">{data.shop.name}</h3>
+                    <p className="text-sm text-gray-500">{data?.ratings} Ratings</p>
+                  </div>
+                </Link>
+              </div>
+              <div
+                className="mt-4 bg-gradient-to-r from-teal-400 to-teal-500 text-white text-center py-2 rounded-md cursor-pointer"
+                onClick={() => {}}
+              >
+                <span className="flex items-center justify-center">
+                  Send Message <AiOutlineMessage className="ml-2" />
+                </span>
+              </div>
+            </div>
+
+            {/* Right Section */}
+            <div className="w-full lg:w-[50%] pt-4 lg:pt-0 pl-0 lg:pl-6">
+              <h1 className="text-2xl lg:text-3xl font-bold text-gray-800">
+                {data.name}
+              </h1>
+              <p className="text-gray-600 mt-2">{data.description}</p>
+
+              <div className="flex items-center mt-3">
+                <h4 className="text-xl font-semibold text-teal-600">
+                  ₦{data.discountPrice}
+                </h4>
+                {data.originalPrice && (
+                  <h3 className="ml-2 text-gray-500 line-through">
+                    ₦{data.originalPrice}
+                  </h3>
+                )}
               </div>
 
-              <div className="w-full 800px:w-[50%] pt-5 pl-[5px] pr-[5px]">
-                <h1 className={`${styles.productTitle} text-[20px]`}>
-                  {data.name}
-                </h1>
-                <p>{data.description}</p>
-
-                <div className="flex pt-3">
-                  <h4 className={`${styles.productDiscountPrice}`}>
-                  ₦{data.discountPrice}
-                  </h4>
-                  <h3 className={`${styles.price}`}>
-                    {data.originalPrice ? "₦" + data.originalPrice  : null}
-                  </h3>
-                </div>
-                <div className="flex items-center mt-12 justify-between pr-3">
-                  <div>
-                    <button
-                      className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
-                      onClick={decrementCount}
-                    >
-                      -
-                    </button>
-                    <span className="bg-gray-200 text-gray-800 font-medium px-4 py-[11px]">
-                      {count}
-                    </span>
-                    <button
-                      className="bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
-                      onClick={incrementCount}
-                    >
-                      +
-                    </button>
-                  </div>
-                  <div>
-                    {click ? (
-                      <AiFillHeart
-                        size={30}
-                        className="cursor-pointer"
-                        onClick={() => removeFromWishlistHandler(data)}
-                        color={click ? "red" : "#333"}
-                        title="Remove from wishlist"
-                      />
-                    ) : (
-                      <AiOutlineHeart
-                        size={30}
-                        className="cursor-pointer"
-                        onClick={() => addToWishlistHandler(data)}
-                        title="Add to wishlist"
-                      />
-                    )}
-                  </div>
-                </div>
-                <div
-                  className={`${styles.button} mt-6 rounded-[4px] h-11 flex items-center`}
-                  onClick={() => addToCartHandler(data._id)}
+              {/* Quantity Selector */}
+              <div className="flex items-center mt-6 space-x-3">
+                <button
+                  className="bg-teal-500 text-white font-bold rounded-md px-4 py-2 shadow-md hover:opacity-75 transition"
+                  onClick={decrementCount}
                 >
-                  <span className="text-[#fff] flex items-center">
-                    Add to cart <AiOutlineShoppingCart className="ml-1" />
-                  </span>
-                </div>
+                  -
+                </button>
+                <span className="text-lg text-gray-700">{count}</span>
+                <button
+                  className="bg-teal-500 text-white font-bold rounded-md px-4 py-2 shadow-md hover:opacity-75 transition"
+                  onClick={incrementCount}
+                >
+                  +
+                </button>
+              </div>
+
+              {/* Wishlist Button */}
+              <div className="mt-6">
+                <button
+                  onClick={toggleWishlist}
+                  className="text-xl text-red-500 cursor-pointer"
+                  title={isWishlist ? "Remove from wishlist" : "Add to wishlist"}
+                >
+                  {isWishlist ? <AiFillHeart /> : <AiOutlineHeart />}
+                </button>
+              </div>
+
+              {/* Add to Cart Button */}
+              <div
+                className="mt-6 bg-teal-500 text-white text-center py-3 rounded-md cursor-pointer shadow-md hover:opacity-75 transition"
+                onClick={() => addToCartHandler(data._id)}
+              >
+                <span className="flex items-center justify-center">
+                  Add to cart <AiOutlineShoppingCart className="ml-2" />
+                </span>
               </div>
             </div>
           </div>
         </div>
-      ) : null}
-    </div>
+      </div>
+    )
   );
 };
 

@@ -69,8 +69,8 @@ router.post(
         const result = await cloudinary.v2.uploader.upload(file.path, {
           folder: "products",
           transformation: [
-            { width: 200, height: 200, crop: "limit" },
-            { quality: "auto" },
+            { width: 800, height: 800, crop: "limit" },
+            { quality: "80" },
           ],
         });
 
@@ -263,66 +263,94 @@ router.get(
   })
 );
 
-// Edit product
+// Edit Product Route
 router.put(
   "/edit-product/:id",
-  isSeller,
-  upload.array("images", 5),
+  isSeller, // Ensure only sellers can edit products
+  upload.array("images", 5), // Handle image uploads, max 5 images
   catchAsyncErrors(async (req, res, next) => {
     try {
       const productId = req.params.id;
       console.log("Editing product with ID:", productId);
 
+      // Fetch the product from the database
       const product = await Product.findById(productId);
       if (!product) {
         return next(new ErrorHandler("Product not found with this ID!", 404));
       }
 
-      console.log("Existing product:", product);
+      console.log("Existing product before update:", product);
 
-      // Update product fields
+      // Prepare data for update
       const updatedData = { ...req.body };
-      console.log("Request body:", req.body);
+      console.log("Request body fields:", req.body);  // Log the fields that are being updated
 
+      // Process new images if provided
       if (req.files && req.files.length > 0) {
-        console.log("New images provided. Processing uploads...");
-        for (const img of product.images) {
-          try {
-            await cloudinary.v2.uploader.destroy(img.public_id);
-          } catch (err) {
-            console.error("Error deleting image from Cloudinary:", err);
+        console.log("Processing new image uploads...");
+
+        // Delete old images from Cloudinary
+        if (product.images && product.images.length > 0) {
+          for (const img of product.images) {
+            try {
+              console.log(`Deleting old image: ${img.public_id}`); // Log the image deletion attempt
+              await cloudinary.v2.uploader.destroy(img.public_id);
+              console.log(`Deleted image: ${img.public_id}`); // Log after successful deletion
+            } catch (err) {
+              console.error("Error deleting old image from Cloudinary:", err);
+            }
           }
         }
 
+        // Upload new images to Cloudinary
         const newImages = [];
         for (const file of req.files) {
-          const result = await cloudinary.v2.uploader.upload(file.path, {
-            folder: "products",
-            transformation: [
-              { width: 200, height: 200, crop: "limit" },
-              { quality: "auto" },
-            ],
-          });
+          try {
+            console.log(`Uploading new image: ${file.path}`); // Log the image upload attempt
+            const result = await cloudinary.v2.uploader.upload(file.path, {
+              folder: "products",
+              transformation: [
+                { width: 200, height: 200, crop: "limit" },
+                { quality: "auto" },
+              ],
+            });
 
-          newImages.push({
-            public_id: result.public_id,
-            url: result.secure_url,
-          });
+            newImages.push({
+              public_id: result.public_id,
+              url: result.secure_url,
+            });
 
+            console.log(`Uploaded new image: ${result.secure_url}`); // Log the uploaded image URL
+          } catch (err) {
+            console.error("Error uploading image to Cloudinary:", err);
+          }
+
+          // Remove the local file after upload
           fs.unlinkSync(file.path);
         }
 
         updatedData.images = newImages;
+      } else {
+        console.log("No new images provided. Retaining existing images.");
       }
 
-      console.log("Updated data to be saved:", updatedData);
+      console.log("Updated data for save:", updatedData); // Log the updated data that will be saved
 
-      const updatedProduct = await Product.findByIdAndUpdate(productId, updatedData, {
-        new: true,
-        runValidators: true,
-      });
+      // Update product in the database
+      const updatedProduct = await Product.findByIdAndUpdate(
+        productId,
+        updatedData,
+        {
+          new: true, // Return the updated product
+          runValidators: true, // Validate updated fields
+        }
+      );
 
-      console.log("Updated product:", updatedProduct);
+      if (updatedProduct) {
+        console.log("Updated product in database:", updatedProduct); // Log the updated product from DB
+      } else {
+        console.log("No product was updated. Check product ID or fields.");
+      }
 
       res.status(200).json({
         success: true,
@@ -331,11 +359,10 @@ router.put(
       });
     } catch (error) {
       console.error("Error during product update:", error);
-      return next(new ErrorHandler(error.message, 500));
+      return next(new ErrorHandler(error.message || "Internal Server Error", 500));
     }
   })
 );
-
 
 
 module.exports = router;

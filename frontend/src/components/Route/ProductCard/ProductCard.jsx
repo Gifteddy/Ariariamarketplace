@@ -56,13 +56,11 @@ const ProductCard = ({ data, isEvent }) => {
   };
 
   return (
-    <>
-      <div
-        className="w-full h-[420px] bg-white rounded-lg shadow-lg hover:shadow-xl p-4 relative cursor-pointer transition-transform duration-300 transform hover:scale-105"
-        style={{
-          transition: "transform 0.3s ease, box-shadow 0.3s ease",
-        }}
-      >
+    <div
+      className="relative w-full h-[480px] bg-gray-50 rounded-lg shadow-md hover:shadow-xl p-4 overflow-hidden group transition-transform duration-300 transform hover:scale-105"
+    >
+      {/* Product Image */}
+      <div className="relative w-full h-[240px] overflow-hidden">
         <Link
           to={`${
             isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`
@@ -70,83 +68,80 @@ const ProductCard = ({ data, isEvent }) => {
         >
           <img
             src={`${data.images && data.images[0]?.url}`}
-            alt=""
-            className="w-full h-[220px] object-cover rounded-t-lg mb-4 transition-all duration-300"
+            alt="Product"
+            className="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110"
           />
         </Link>
+      </div>
 
+      {/* Product Info */}
+      <div className="px-3 pt-4">
         <Link to={`/shop/preview/${data?.shop._id}`}>
-          <h5 className={`${styles.shop_name} font-bold`}>{data.shop.name}</h5>
+          <h5 className="text-sm font-semibold text-gray-500 hover:text-gray-800 transition-colors">
+            {data.shop.name}
+          </h5>
         </Link>
-
         <Link
           to={`${
             isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`
           }`}
         >
-          <h4 className="pb-2 text-[18px] font-semibold text-gray-800">
-            {data.name.length > 40 ? data.name.slice(0, 40) + "..." : data.name}
+          <h4 className="text-lg font-bold text-gray-800 truncate hover:text-gray-900 transition-colors">
+            {data.name}
           </h4>
-
-          <div className="flex items-center pb-2">
-            <Ratings rating={data?.ratings} />
-          </div>
-
-          <div className="py-2 flex items-center justify-between">
-            <div className="flex items-center">
-              <h5 className={`${styles.productDiscountPrice} text-lg font-bold text-black`}>
-                ₦{data.discountPrice || data.originalPrice}
-              </h5>
-              {data.originalPrice && (
-                <h4 className={`${styles.price} text-sm text-gray-400 line-through pl-2`}>
-                  ₦{data.originalPrice}
-                </h4>
-              )}
-            </div>
-            <span className="font-medium text-[16px] text-green-600">
-              {data.sold_out} sold
-            </span>
-          </div>
         </Link>
-
-        {/* Action Icons */}
-        <div className="absolute right-3 top-4 flex flex-col items-center space-y-3">
-          {click ? (
-            <AiFillHeart
-              size={24}
-              className="cursor-pointer"
-              onClick={() => removeFromWishlistHandler(data)}
-              color="red"
-              title="Remove from wishlist"
-            />
-          ) : (
-            <AiOutlineHeart
-              size={24}
-              className="cursor-pointer"
-              onClick={() => addToWishlistHandler(data)}
-              color="#333"
-              title="Add to wishlist"
-            />
-          )}
-          <AiOutlineEye
-            size={24}
-            className="cursor-pointer"
-            onClick={() => setOpen(!open)}
-            color="#333"
-            title="Quick view"
-          />
-          <AiOutlineShoppingCart
-            size={24}
-            className="cursor-pointer"
-            onClick={() => addToCartHandler(data._id)}
-            color="#444"
-            title="Add to cart"
-          />
+        <div className="flex items-center py-2">
+          <Ratings rating={data?.ratings} />
         </div>
-
-        {open && <ProductDetailsCard setOpen={setOpen} data={data} />}
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <h5 className="text-lg font-semibold text-black">
+              ₦{data.discountPrice || data.originalPrice}
+            </h5>
+            {data.originalPrice && (
+              <h4 className="text-sm text-gray-400 line-through">
+                ₦{data.originalPrice}
+              </h4>
+            )}
+          </div>
+          {/*<span className="text-sm font-medium text-green-600">
+            {data.sold_out} sold
+          </span>*/}
+        </div>
       </div>
-    </>
+
+      {/* Action Buttons */}
+      <div className="absolute bottom-4 left-0 right-0 flex justify-around">
+        <button
+          onClick={() => setOpen(!open)}
+          className="bg-blue-500 p-2 rounded-full shadow-md hover:bg-green-600 text-white transition-transform transform hover:scale-110"
+          title="Quick view"
+        >
+          <AiOutlineEye size={24} />
+        </button>
+        <button
+          onClick={() => addToCartHandler(data._id)}
+          className="bg-blue-500 p-2 rounded-full shadow-md hover:bg-green-600 text-white transition-transform transform hover:scale-110"
+          title="Add to cart"
+        >
+          <AiOutlineShoppingCart size={24} />
+        </button>
+        <button
+          onClick={() =>
+            click ? removeFromWishlistHandler(data) : addToWishlistHandler(data)
+          }
+          className={`${
+            click ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"
+          } p-2 rounded-full shadow-md text-white transition-transform transform hover:scale-110`}
+          title={click ? "Remove from wishlist" : "Add to wishlist"}
+        >
+          {click ? <AiFillHeart size={24} /> : <AiOutlineHeart size={24} />}
+        </button>
+      </div>
+
+      {/* Quick View Modal */}
+      {open && <ProductDetailsCard setOpen={setOpen} data={data} />}
+    </div>
   );
 };
 

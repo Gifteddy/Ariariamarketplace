@@ -6,10 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getAllProductsShop, deleteProduct } from "../../redux/actions/product";
 import Loader from "../Layout/Loader";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AllProducts = () => {
   const { products, isLoading } = useSelector((state) => state.products);
   const { seller } = useSelector((state) => state.seller);
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -19,6 +21,8 @@ const AllProducts = () => {
 
   const handleDelete = (id) => {
     dispatch(deleteProduct(id));
+    navigate("/dashboard");
+    window.location.reload();
     window.location.reload();
   };
 

@@ -1,14 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import styles from "../../styles/styles";
 import ub from "./ub.jpg";
 import abnm from "./abnm.jpg";
 
 const Sponsored = () => {
   const sponsors = [
-    { id: 1, img: ub, alt: "Sponsor 1" },
-    { id: 2, img: abnm, alt: "Sponsor 2" },
-    { id: 3, img: ub, alt: "Sponsor 3" },
-    { id: 4, img: abnm, alt: "Sponsor 4" },
+    { id: 1, img: abnm, alt: "Sponsor 1" },
+    { id: 2, img: ub, alt: "Sponsor 2" },
   ];
 
   const scrollContainerRef = useRef(null);
@@ -19,41 +16,94 @@ const Sponsored = () => {
         const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
 
         if (scrollLeft + clientWidth >= scrollWidth) {
-          // If at the end, restart scroll
-          scrollContainerRef.current.scrollLeft = 0;
+          scrollContainerRef.current.scrollLeft = 0; // Reset to the start
         } else {
-          // Continue scrolling
-          scrollContainerRef.current.scrollLeft += 1; // Adjust scroll step for speed
+          scrollContainerRef.current.scrollLeft += 1; // Adjust scroll speed
         }
       }
     };
 
-    const interval = setInterval(scroll, 50); // Adjust interval for speed
-    return () => clearInterval(interval); // Cleanup interval on component unmount
+    const interval = setInterval(scroll, 70); // Smooth scrolling interval
+    return () => clearInterval(interval); // Cleanup on unmount
   }, []);
 
   return (
-    <div className={`${styles.section} bg-white py-10 px-5 mb-12 rounded-xl`}>
+    <div
+      style={{
+        padding: "40px 20px",
+        background: "#ffffff",
+        borderRadius: "12px",
+        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+        textAlign: "center",
+        marginBottom: "48px",
+      }}
+    >
+      {/* Header */}
+      <h2
+        style={{fontSize: "28px",
+          fontWeight: "bold",
+          background: "linear-gradient(90deg, #00b894, #0984e3)", // Updated gradient to green and blue
+          backgroundClip: "text",
+          WebkitBackgroundClip: "text",
+          color: "transparent",
+          animation: "gradientMove 3s infinite alternate",
+          
+        }}
+      >
+        Meet Our Sponsors
+      </h2>
+      <p style={{ fontSize: "16px", color: "#555", marginBottom: "24px" }}>
+        We are proud to be supported by these amazing organizations.
+      </p>
+
+      {/* Sponsor Carousel */}
       <div
         ref={scrollContainerRef}
-        className="flex overflow-hidden whitespace-nowrap"
         style={{
+          display: "flex",
+          overflow: "hidden",
           scrollBehavior: "smooth",
+          gap: "20px",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
         {sponsors.map((sponsor) => (
           <div
             key={sponsor.id}
-            className="inline-block mx-5 flex-shrink-0"
+            style={{
+              flex: "1 1 auto",
+              textAlign: "center",
+            }}
           >
             <img
               src={sponsor.img}
               alt={sponsor.alt}
-              className="w-40 object-contain"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100px",
+                objectFit: "contain",
+                margin: "0 auto",
+              }}
             />
           </div>
         ))}
       </div>
+
+{/* Keyframe animation for heading */}
+<style>
+        {`
+          @keyframes gradientMove {
+            0% {
+              background-position: 0%;
+            }
+            100% {
+              background-position: 100%;
+            }
+          }
+        `}
+      </style>
+
     </div>
   );
 };
