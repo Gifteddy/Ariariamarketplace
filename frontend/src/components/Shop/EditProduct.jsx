@@ -226,7 +226,7 @@ const EditProduct = () => {
         <br />
         <div>
           <label className="pb-2">
-            Upload Images <span className="text-red-500">*</span>
+            Upload Images. <span className="text-red-500">*</span>
           </label>
           <input
             type="file"
