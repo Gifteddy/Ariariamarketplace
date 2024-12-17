@@ -7,3 +7,13 @@ socket/node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+
+
+
+frontend\src\server.js
+frontend\src\pages\UserInbox.jsx
+frontend\src\components\Shop\DashboardMessages.jsx
+backend\controller\user.js
+backend\controller\shop.js
+backend\app.js
