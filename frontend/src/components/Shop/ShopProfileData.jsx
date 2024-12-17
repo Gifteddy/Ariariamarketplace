@@ -69,7 +69,7 @@ const ShopProfileData = ({ isOwner }) => {
           <div className="mt-3 md:mt-0">
             <Link to="/dashboard">
               <div className={`${styles.button} !rounded-[4px] h-[42px]`}>
-                <span className="text-[#fff]">Go Dashboard</span>
+                <span className="text-[#fff]">Dashboard</span>
               </div>
             </Link>
           </div>

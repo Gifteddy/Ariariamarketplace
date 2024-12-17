@@ -8,9 +8,12 @@ import { toast } from "react-toastify";
 
 const CreateProduct = () => {
   const { seller } = useSelector((state) => state.seller);
+  console.log("Seller from Redux:", seller); // Check if seller._id exists
+  
   const { success, error } = useSelector((state) => state.products);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  
 
   const [images, setImages] = useState([]);
   const [name, setName] = useState("");

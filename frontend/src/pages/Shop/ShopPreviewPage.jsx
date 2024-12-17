@@ -10,11 +10,15 @@ const ShopPreviewPage = () => {
       <div className="w-full flex flex-col-reverse 800px:flex-row py-10 justify-between">
         {/* Shop Info Sidebar */}
         <div
-          className="w-full 800px:w-[25%] bg-[#fff] rounded-[4px] shadow-sm overflow-hidden 
-            800px:overflow-y-scroll max-h-[300px] 800px:max-h-[90vh] 800px:sticky top-10 z-10"
-        >
-          <ShopInfo isOwner={false} />
-        </div>
+  className="w-full bg-[#fff] rounded-[4px] shadow-sm overflow-hidden 
+    max-h-[300px] sm:max-h-[400px] lg:max-h-[90vh] 
+    sm:w-full md:w-[60%] lg:w-[25%] 
+    sm:sticky sm:top-10 sm:z-10 
+    transition-all duration-300 ease-in-out transform 
+    sm:overflow-y-auto lg:overflow-y-scroll">
+  <ShopInfo isOwner={false} />
+</div>
+
 
         {/* Shop Profile Content */}
         <div
