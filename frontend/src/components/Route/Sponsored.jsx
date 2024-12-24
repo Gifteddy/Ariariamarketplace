@@ -50,11 +50,8 @@ const Sponsored = () => {
           
         }}
       >
-        Meet Our Sponsors
+        Meet Our Partners
       </h2>
-      <p style={{ fontSize: "16px", color: "#555", marginBottom: "24px" }}>
-        We are proud to be supported by these amazing organizations.
-      </p>
 
       {/* Sponsor Carousel */}
       <div

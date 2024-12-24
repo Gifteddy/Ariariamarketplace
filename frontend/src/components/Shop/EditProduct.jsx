@@ -61,9 +61,19 @@ const EditProduct = () => {
   // Submit form
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     const updatedData = new FormData();
-
+  
+    // Append other product data
+    updatedData.append("name", name);
+    updatedData.append("description", description);
+    updatedData.append("category", category);
+    updatedData.append("subcategory", subcategory);
+    updatedData.append("tags", tags);
+    updatedData.append("originalPrice", originalPrice);
+    updatedData.append("discountPrice", discountPrice);
+    updatedData.append("stock", stock);
+  
     // Append existing and new images
     images.forEach((image) => {
       if (typeof image === "string") {
@@ -74,20 +84,11 @@ const EditProduct = () => {
         updatedData.append("images", image);
       }
     });
-
-    // Append other product data
-    updatedData.append("name", name);
-    updatedData.append("description", description);
-    updatedData.append("category", category);
-    updatedData.append("subcategory", subcategory);
-    updatedData.append("tags", tags);
-    updatedData.append("originalPrice", originalPrice);
-    updatedData.append("discountPrice", discountPrice);
-    updatedData.append("stock", stock);
-
+  
     // Dispatch the edit product action
     dispatch(editProduct(id, updatedData));
   };
+  
 
   if (!product) {
     return <div>Loading...</div>;

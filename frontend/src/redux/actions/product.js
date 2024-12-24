@@ -46,67 +46,45 @@ export const createProduct =
 
 
 // Edit product action
-export const editProduct = (id, updatedData, images) => async (dispatch) => {
+export const editProduct = (id, updatedData) => async (dispatch) => {
   try {
     dispatch({
       type: "editProductRequest",
     });
 
-    // Create FormData to handle product data and images
-    const formData = new FormData();
-    Object.keys(updatedData).forEach((key) => {
-      formData.append(key, updatedData[key]);
-    });
+    // Log the data being sent for debugging
+    console.log("Updated Data FormData:", Array.from(updatedData.entries()));
 
-    // Log updated data for debugging
-    console.log("Updated Data:", updatedData);
-
-    // Append images if any are provided
-    if (images && images.length > 0) {
-      images.forEach((image, index) => {
-        formData.append("images", image);
-        console.log(`Appending image ${index}:`, image);  // Log each image added
-      });
-    }
-
-    // Debug FormData entries
-    console.log("Form Data Entries:");
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);  // Log each formData entry for debugging
-    }
-
-    // Send PUT request to update product
+    // Send PUT request to update the product
     const { data } = await axios.put(
       `${server}/product/edit-product/${id}`,
-      formData,
+      updatedData, // Pass FormData directly
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`, // Pass token from localStorage
-          "Content-Type": "multipart/form-data",  // Required for sending form data
+          "Content-Type": "multipart/form-data", // Ensure correct content type
         },
-        withCredentials: true,  // Ensure cookies (if needed) are sent with the request
+        withCredentials: true, // Ensure cookies are sent with the request
       }
     );
-
-    // Log successful response
-    console.log("Edit Product Success Response:", data);
 
     // Dispatch success action with updated product data
     dispatch({
       type: "editProductSuccess",
-      payload: data.product,  // Updated product data from the backend
+      payload: data.product, // Updated product data from the backend
     });
   } catch (error) {
     // Log error response for debugging
     console.error("Edit Product Error Response:", error.response?.data);
 
-    // Dispatch fail action with error message if the request fails
+    // Dispatch fail action with error message
     dispatch({
       type: "editProductFail",
       payload: error.response?.data?.message || error.message || "Something went wrong",
     });
   }
 };
+
 
 
 
