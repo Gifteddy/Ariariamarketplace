@@ -65,9 +65,9 @@ const ProductDetailsCard = ({ setOpen, data }) => {
             onClick={() => setOpen(false)}
           />
 
-          <div className="flex flex-col lg:flex-row">
+          <div className="flex flex-col ">
             {/* Left Section */}
-            <div className="w-full lg:w-[50%] mb-6 lg:mb-0">
+            <div className="w-full  mb-6 ">
               <img
                 src={data?.images?.[0]?.url}
                 alt={data.name}
@@ -100,8 +100,8 @@ const ProductDetailsCard = ({ setOpen, data }) => {
             </div>
 
             {/* Right Section */}
-            <div className="w-full lg:w-[50%] pt-4 lg:pt-0 pl-0 lg:pl-6">
-              <h1 className="text-2xl lg:text-3xl font-bold text-gray-800">
+            <div className="w-full pt-4  pl-0 ">
+              <h1 className="text-2xl  font-bold text-gray-800">
                 {data.name}
               </h1>
               <p className="text-gray-600 mt-2">{data.description}</p>
