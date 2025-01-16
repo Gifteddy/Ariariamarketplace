@@ -90,7 +90,7 @@ const ProductDetailsCard = ({ setOpen, data }) => {
                 </Link>
               </div>
               <div
-                className="mt-4 bg-gradient-to-r from-teal-400 to-teal-500 text-white text-center py-2 rounded-md cursor-pointer"
+                className="mt-4 bg-gradient-to-r from-teal-400 to-teal-600 text-white text-center py-2 rounded-md cursor-pointer"
                 onClick={() => {}}
               >
                 <span className="flex items-center justify-center">
