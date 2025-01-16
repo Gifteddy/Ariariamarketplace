@@ -1,7 +1,7 @@
 import React from 'react'
 import DashboardHeader from '../../components/Shop/Layout/DashboardHeader'
 import DashboardSideBar from '../../components/Shop/Layout/DashboardSideBar'
-import DashboardMessages from "../../components/Shop/DashboardMessages";
+import DashboardMessages from "../DashboardMessages";
 
 const ShopInboxPage = () => {
   return (
