@@ -658,6 +658,7 @@ export const navItems = [
 
     {
       name: "FAQ",
+      link: "/faq"
     },
 
     /* 

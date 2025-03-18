@@ -9,20 +9,20 @@ const Footer = () => {
 
   const handleSubmit = () => {
     setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 2000); // Hide after 2 seconds
+    setTimeout(() => setShowPopup(false), 5000); // Hide after 2 seconds
   };
 
   return (
     <div className="bg-[#000] text-white relative">
       {showPopup && (
-        <div className="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
-          Successful!
+        <div className="absolute top-5 right-5 bg-green-500 text-white font-bold px-4 py-2 rounded shadow-xl">
+          Submitted Successfully!
         </div>
       )}
 
       <div className="md:flex md:justify-between md:items-center sm:px-12 px-4 bg-[#342ac8] py-7">
         <h1 className="lg:text-4xl text-3xl md:mb-0 mb-6 lg:leading-normal font-semibold md:w-2/5">
-          <span className="text-[#56d879]">Subscribe </span>for the Latest News!{" "}
+          <span className="text-[#2ddf5f]">Subscribe </span>for the Latest News!{" "}
           <br />
           events and offers
         </h1>
