@@ -9,7 +9,7 @@ import Sponsored from "../components/Route/Sponsored";
 import Footer from "../components/Layout/Footer";
 
 // Import the ComingSoonCountdown component
-import ComingSoonCountdown from "../components/Layout/ComingSoonCountdown"; 
+//import ComingSoonCountdown from "../components/Layout/ComingSoonCountdown"; 
 import FooterNav from '../components/Layout/FooterNav';
 
 const HomePage = () => {
@@ -19,7 +19,7 @@ const HomePage = () => {
   return (
     <div style={{ overflowX: "hidden" }}>
       {/* Add the ComingSoonCountdown component */}
-      <ComingSoonCountdown targetDate={targetDate} />
+      {/*<ComingSoonCountdown targetDate={targetDate} />*/}
       
       {/* Main homepage content */}
       <Header activeHeading={1} />
