@@ -196,12 +196,12 @@ const Header = ({ activeHeading }) => {
         </div>
       </div>
 
-      {/* Navigation Bar - Desktop */}
+      {/* Navigation Bar - Desktop - FIXED VISIBILITY */}
       <div className={`hidden 800px:block bg-white border-b border-gray-200 z-[999] ${
         active ? "fixed top-0 left-0 right-0 shadow-lg" : ""
       } transition-all duration-300`}>
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between py-3">
             {/* Categories Dropdown */}
             <div className="relative">
               <button
@@ -224,8 +224,10 @@ const Header = ({ activeHeading }) => {
               )}
             </div>
 
-            {/* Navigation Links */}
-            <Navbar active={activeHeading} />
+            {/* Navigation Links - FIXED: Now properly visible */}
+            <div className="flex-1 flex justify-center">
+              <Navbar active={activeHeading} />
+            </div>
 
             {/* Additional Info */}
             <div className="text-sm text-gray-600">
