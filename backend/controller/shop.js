@@ -23,21 +23,47 @@ router.post(
       // Check if user already exists
       const sellerEmail = await Shop.findOne({ email });
       if (sellerEmail) {
-        return next(new ErrorHandler("User already exists", 400));
+        return next(new ErrorHandler("Shop with this email already exists", 400));
       }
 
-      // Use the uploaded file path
-      const filePath = req.file ? req.file.path : null;
+      let avatarData = {
+        public_id: "",
+        url: ""
+      };
+
+      // Handle avatar upload if file exists
+      if (req.file) {
+        try {
+          // Upload to Cloudinary
+          const result = await cloudinary.v2.uploader.upload(req.file.path, {
+            folder: "shop-avatars",
+            width: 150,
+          });
+
+          // Delete the local file after upload
+          const fs = require("fs");
+          fs.unlink(req.file.path, (err) => {
+            if (err) {
+              console.error("Error deleting local file:", err);
+            }
+          });
+
+          avatarData = {
+            public_id: result.public_id,
+            url: result.secure_url,
+          };
+        } catch (uploadError) {
+          console.error("Cloudinary upload error:", uploadError);
+          // Continue with default avatar even if upload fails
+        }
+      }
 
       // Create seller directly without activation
       const seller = await Shop.create({
         name,
         email,
         password,
-        avatar: {
-          public_id: null,
-          url: filePath,
-        },
+        avatar: avatarData,
         address,
         phoneNumber,
         zipCode,
@@ -47,23 +73,20 @@ router.post(
       sendShopToken(seller, 201, res);
 
     } catch (error) {
+      // Handle duplicate key error specifically
+      if (error.code === 11000) {
+        return next(new ErrorHandler("Shop with this email already exists", 400));
+      }
       return next(new ErrorHandler(error.message, 400));
     }
   })
 );
 
-// Remove or keep the activation route (it won't be used anymore)
-// You can remove the entire activation route if you want
-
-// activate user (optional - you can remove this if not needed)
+// Remove activation route since we don't need email verification
 router.post(
   "/activation",
   catchAsyncErrors(async (req, res, next) => {
-    try {
-      return next(new ErrorHandler("Email verification is disabled", 400));
-    } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
-    }
+    return next(new ErrorHandler("Email verification is disabled. Please sign up directly.", 400));
   })
 );
 
@@ -75,24 +98,22 @@ router.post(
       const { email, password } = req.body;
 
       if (!email || !password) {
-        return next(new ErrorHandler("Please provide the all fields!", 400));
+        return next(new ErrorHandler("Please provide both email and password!", 400));
       }
 
       const user = await Shop.findOne({ email }).select("+password");
 
       if (!user) {
-        return next(new ErrorHandler("User doesn't exists!", 400));
+        return next(new ErrorHandler("Invalid email or password!", 400));
       }
 
       const isPasswordValid = await user.comparePassword(password);
 
       if (!isPasswordValid) {
-        return next(
-          new ErrorHandler("Please provide the correct information", 400)
-        );
+        return next(new ErrorHandler("Invalid email or password!", 400));
       }
 
-      sendShopToken(user, 201, res);
+      sendShopToken(user, 200, res);
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
@@ -108,7 +129,7 @@ router.get(
       const seller = await Shop.findById(req.seller._id);
 
       if (!seller) {
-        return next(new ErrorHandler("User doesn't exists", 400));
+        return next(new ErrorHandler("Seller not found", 404));
       }
 
       res.status(200).json({
@@ -132,7 +153,7 @@ router.get(
         sameSite: "none",
         secure: true,
       });
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         message: "Log out successful!",
       });
@@ -148,7 +169,12 @@ router.get(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const shop = await Shop.findById(req.params.id);
-      res.status(201).json({
+      
+      if (!shop) {
+        return next(new ErrorHandler("Shop not found", 404));
+      }
+      
+      res.status(200).json({
         success: true,
         shop,
       });
@@ -162,30 +188,52 @@ router.get(
 router.put(
   "/update-shop-avatar",
   isSeller,
+  upload.single("avatar"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      let existsSeller = await Shop.findById(req.seller._id);
+      const existsSeller = await Shop.findById(req.seller._id);
 
-        const imageId = existsSeller.avatar.public_id;
+      if (!existsSeller) {
+        return next(new ErrorHandler("Seller not found", 404));
+      }
 
-        await cloudinary.v2.uploader.destroy(imageId);
+      // Delete old avatar from Cloudinary if it exists
+      if (existsSeller.avatar && existsSeller.avatar.public_id) {
+        await cloudinary.v2.uploader.destroy(existsSeller.avatar.public_id);
+      }
 
-        const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-          folder: "avatars",
+      let avatarData = {
+        public_id: "",
+        url: ""
+      };
+
+      // Upload new avatar if provided
+      if (req.file) {
+        const result = await cloudinary.v2.uploader.upload(req.file.path, {
+          folder: "shop-avatars",
           width: 150,
         });
 
-        existsSeller.avatar = {
-          public_id: myCloud.public_id,
-          url: myCloud.secure_url,
-        };
+        // Delete local file
+        const fs = require("fs");
+        fs.unlink(req.file.path, (err) => {
+          if (err) {
+            console.error("Error deleting local file:", err);
+          }
+        });
 
-  
+        avatarData = {
+          public_id: result.public_id,
+          url: result.secure_url,
+        };
+      }
+
+      existsSeller.avatar = avatarData;
       await existsSeller.save();
 
       res.status(200).json({
         success: true,
-        seller:existsSeller,
+        seller: existsSeller,
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
@@ -201,21 +249,22 @@ router.put(
     try {
       const { name, description, address, phoneNumber, zipCode } = req.body;
 
-      const shop = await Shop.findOne(req.seller._id);
+      const shop = await Shop.findById(req.seller._id);
 
       if (!shop) {
-        return next(new ErrorHandler("User not found", 400));
+        return next(new ErrorHandler("Seller not found", 404));
       }
 
-      shop.name = name;
-      shop.description = description;
-      shop.address = address;
-      shop.phoneNumber = phoneNumber;
-      shop.zipCode = zipCode;
+      // Update only provided fields
+      if (name) shop.name = name;
+      if (description) shop.description = description;
+      if (address) shop.address = address;
+      if (phoneNumber) shop.phoneNumber = phoneNumber;
+      if (zipCode) shop.zipCode = zipCode;
 
       await shop.save();
 
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         shop,
       });
@@ -235,7 +284,7 @@ router.get(
       const sellers = await Shop.find().sort({
         createdAt: -1,
       });
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         sellers,
       });
@@ -255,14 +304,17 @@ router.delete(
       const seller = await Shop.findById(req.params.id);
 
       if (!seller) {
-        return next(
-          new ErrorHandler("Seller is not available with this id", 400)
-        );
+        return next(new ErrorHandler("Seller not found", 404));
+      }
+
+      // Delete avatar from Cloudinary if exists
+      if (seller.avatar && seller.avatar.public_id) {
+        await cloudinary.v2.uploader.destroy(seller.avatar.public_id);
       }
 
       await Shop.findByIdAndDelete(req.params.id);
 
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         message: "Seller deleted successfully!",
       });
@@ -280,11 +332,17 @@ router.put(
     try {
       const { withdrawMethod } = req.body;
 
-      const seller = await Shop.findByIdAndUpdate(req.seller._id, {
-        withdrawMethod,
-      });
+      const seller = await Shop.findByIdAndUpdate(
+        req.seller._id,
+        { withdrawMethod },
+        { new: true, runValidators: true }
+      );
 
-      res.status(201).json({
+      if (!seller) {
+        return next(new ErrorHandler("Seller not found", 404));
+      }
+
+      res.status(200).json({
         success: true,
         seller,
       });
@@ -294,7 +352,7 @@ router.put(
   })
 );
 
-// delete seller withdraw merthods --- only seller
+// delete seller withdraw methods --- only seller
 router.delete(
   "/delete-withdraw-method/",
   isSeller,
@@ -303,14 +361,13 @@ router.delete(
       const seller = await Shop.findById(req.seller._id);
 
       if (!seller) {
-        return next(new ErrorHandler("Seller not found with this id", 400));
+        return next(new ErrorHandler("Seller not found", 404));
       }
 
       seller.withdrawMethod = null;
-
       await seller.save();
 
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         seller,
       });
@@ -319,14 +376,5 @@ router.delete(
     }
   })
 );
-
-// You can also remove these helper functions if not needed elsewhere
-/*
-const createActivationToken = (seller) => {
-  return jwt.sign(seller, process.env.ACTIVATION_SECRET, {
-    expiresIn: "5m",
-  });
-};
-*/
 
 module.exports = router;
