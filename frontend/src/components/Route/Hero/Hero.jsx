@@ -58,7 +58,7 @@ const Hero = () => {
   return (
     <div 
       ref={heroRef}
-      className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-emerald-900 z-[-2000]"
+      className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-emerald-900 z-[1]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -112,7 +112,7 @@ const Hero = () => {
                 </button>
               </Link>
               
-              <Link to="/become-seller">
+              <Link to="/dashboard">
                 <button className="hero-secondary-btn group">
                   <span className="hero-gradient-text">Become a Seller</span>
                 </button>
@@ -123,8 +123,8 @@ const Hero = () => {
             <div className="grid grid-cols-3 gap-8 pt-8 border-t border-white/10 animate-fade-in-up delay-600">
               {[
                 { number: "Very", label: "Happy Customers" },
-                { number: "Exclusive", label: "Verified Sellers" },
-                { number: "Exceptional", label: "Products" }
+                { number: "Top", label: "Verified Sellers" },
+                { number: "Great", label: "Products" }
               ].map((stat, index) => (
                 <div key={index} className="text-center group cursor-pointer">
                   <div className="text-2xl font-bold hero-gradient-text group-hover:scale-110 transition-transform duration-300">
