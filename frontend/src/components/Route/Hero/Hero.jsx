@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 // Import your local images
-import bannerImage1 from "./bannerImage1.jpg";
-import bannerImage2 from "./bannerImage2.jpg";
-import bannerImage3 from "./bannerImage3.jpg";
+import bannerImage1 from "https://pikaso.cdnpk.net/private/production/2737126217/asset.jpg?token=exp=1763942400~hmac=d774fc02e76e7666b66305a51ece25ef36a40c531d0f40948f335e2449b675e0";
+import bannerImage2 from "https://pikaso.cdnpk.net/private/production/2737129867/asset.jpg?token=exp=1763942400~hmac=d4b9ad5148ce3db5aeb198ae8e21b3594cb2dab54507b2313ca2b55f1614e446";
+import bannerImage3 from "https://pikaso.cdnpk.net/private/production/2737133428/asset.jpg?token=exp=1763942400~hmac=eeace9937348bd18ef34da7303788afccc60c71b9678466a170f43057566ba6d";
 
 const Hero = () => {
   const [currentImage, setCurrentImage] = useState(0);
@@ -57,7 +57,7 @@ const Hero = () => {
   return (
     <div 
       ref={heroRef}
-      className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-emerald-900"
+      className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-emerald-900 z-[-20]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
