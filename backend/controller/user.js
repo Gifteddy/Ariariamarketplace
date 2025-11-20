@@ -9,14 +9,13 @@ const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
 const { isAuthenticated, isAdmin } = require("../middleware/auth");
 
-// create user - WITHOUT EMAIL VERIFICATION
-
 // Import multer configuration
-const upload = require("../utils/multer"); // Adjust the path to your multer setup
+const upload = require("../utils/multer");
 
+// create user - WITHOUT EMAIL VERIFICATION
 router.post(
   "/create-user",
-  upload.single("avatar"), // Handle a single file upload with field name "avatar"
+  upload.single("avatar"),
   catchAsyncErrors(async (req, res, next) => {
     try {
       const { name, email, password } = req.body;
@@ -24,52 +23,67 @@ router.post(
       // Check if the email already exists
       const userEmail = await User.findOne({ email });
       if (userEmail) {
-        return next(new ErrorHandler("User already exists", 400));
+        return next(new ErrorHandler("User with this email already exists", 400));
       }
 
-      // Upload the avatar file to Cloudinary
-      const result = await cloudinary.v2.uploader.upload(req.file.path, {
-        folder: "avatars",
-      });
+      let avatarData = {
+        public_id: "",
+        url: ""
+      };
 
-      // Delete the file from local storage after uploading to Cloudinary
-      const fs = require("fs");
-      fs.unlink(req.file.path, (err) => {
-        if (err) {
-          console.error("Error deleting file:", err);
+      // Handle avatar upload if file exists
+      if (req.file) {
+        try {
+          // Upload the avatar file to Cloudinary
+          const result = await cloudinary.v2.uploader.upload(req.file.path, {
+            folder: "user-avatars",
+            width: 150,
+          });
+
+          // Delete the file from local storage after uploading to Cloudinary
+          const fs = require("fs");
+          fs.unlink(req.file.path, (err) => {
+            if (err) {
+              console.error("Error deleting file:", err);
+            }
+          });
+
+          avatarData = {
+            public_id: result.public_id,
+            url: result.secure_url,
+          };
+        } catch (uploadError) {
+          console.error("Cloudinary upload error:", uploadError);
+          // Continue with default avatar even if upload fails
         }
-      });
+      }
 
       // Create user directly without activation
       const user = await User.create({
         name,
         email,
         password,
-        avatar: {
-          public_id: result.public_id,
-          url: result.secure_url,
-        },
+        avatar: avatarData,
       });
 
       // Send token directly (auto-activate)
       sendToken(user, 201, res);
 
     } catch (error) {
+      // Handle duplicate key error specifically
+      if (error.code === 11000) {
+        return next(new ErrorHandler("User with this email already exists", 400));
+      }
       return next(new ErrorHandler(error.message, 400));
     }
   })
 );
 
-// Remove or keep the activation route (it won't be used anymore)
-// activate user (optional - you can remove this if not needed)
+// Remove activation route since we don't need email verification
 router.post(
   "/activation",
   catchAsyncErrors(async (req, res, next) => {
-    try {
-      return next(new ErrorHandler("Email verification is disabled", 400));
-    } catch (error) {
-      return next(new ErrorHandler(error.message, 500));
-    }
+    return next(new ErrorHandler("Email verification is disabled. Please sign up directly.", 400));
   })
 );
 
@@ -81,24 +95,22 @@ router.post(
       const { email, password } = req.body;
 
       if (!email || !password) {
-        return next(new ErrorHandler("Please provide the all fields!", 400));
+        return next(new ErrorHandler("Please provide both email and password!", 400));
       }
 
       const user = await User.findOne({ email }).select("+password");
 
       if (!user) {
-        return next(new ErrorHandler("User doesn't exists!", 400));
+        return next(new ErrorHandler("Invalid email or password!", 400));
       }
 
       const isPasswordValid = await user.comparePassword(password);
 
       if (!isPasswordValid) {
-        return next(
-          new ErrorHandler("Please provide the correct information", 400)
-        );
+        return next(new ErrorHandler("Invalid email or password!", 400));
       }
 
-      sendToken(user, 201, res);
+      sendToken(user, 200, res);
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
@@ -114,7 +126,7 @@ router.get(
       const user = await User.findById(req.user.id);
 
       if (!user) {
-        return next(new ErrorHandler("User doesn't exists", 400));
+        return next(new ErrorHandler("User not found", 404));
       }
 
       res.status(200).json({
@@ -138,7 +150,7 @@ router.get(
         sameSite: "none",
         secure: true,
       });
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         message: "Log out successful!",
       });
@@ -156,27 +168,26 @@ router.put(
     try {
       const { email, password, phoneNumber, name } = req.body;
 
-      const user = await User.findOne({ email }).select("+password");
+      const user = await User.findById(req.user.id).select("+password");
 
       if (!user) {
-        return next(new ErrorHandler("User not found", 400));
+        return next(new ErrorHandler("User not found", 404));
       }
 
+      // Verify current password
       const isPasswordValid = await user.comparePassword(password);
-
       if (!isPasswordValid) {
-        return next(
-          new ErrorHandler("Please provide the correct information", 400)
-        );
+        return next(new ErrorHandler("Current password is incorrect", 400));
       }
 
-      user.name = name;
-      user.email = email;
-      user.phoneNumber = phoneNumber;
+      // Update fields
+      if (name) user.name = name;
+      if (email) user.email = email;
+      if (phoneNumber) user.phoneNumber = phoneNumber;
 
       await user.save();
 
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         user,
       });
@@ -190,25 +201,47 @@ router.put(
 router.put(
   "/update-avatar",
   isAuthenticated,
+  upload.single("avatar"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      let existsUser = await User.findById(req.user.id);
-      if (req.body.avatar !== "") {
-        const imageId = existsUser.avatar.public_id;
+      const existsUser = await User.findById(req.user.id);
 
-        await cloudinary.v2.uploader.destroy(imageId);
+      if (!existsUser) {
+        return next(new ErrorHandler("User not found", 404));
+      }
 
-        const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-          folder: "avatars",
+      // Delete old avatar from Cloudinary if it exists
+      if (existsUser.avatar && existsUser.avatar.public_id) {
+        await cloudinary.v2.uploader.destroy(existsUser.avatar.public_id);
+      }
+
+      let avatarData = {
+        public_id: "",
+        url: ""
+      };
+
+      // Upload new avatar if provided
+      if (req.file) {
+        const result = await cloudinary.v2.uploader.upload(req.file.path, {
+          folder: "user-avatars",
           width: 150,
         });
 
-        existsUser.avatar = {
-          public_id: myCloud.public_id,
-          url: myCloud.secure_url,
+        // Delete local file
+        const fs = require("fs");
+        fs.unlink(req.file.path, (err) => {
+          if (err) {
+            console.error("Error deleting local file:", err);
+          }
+        });
+
+        avatarData = {
+          public_id: result.public_id,
+          url: result.secure_url,
         };
       }
 
+      existsUser.avatar = avatarData;
       await existsUser.save();
 
       res.status(200).json({
@@ -229,9 +262,14 @@ router.put(
     try {
       const user = await User.findById(req.user.id);
 
+      if (!user) {
+        return next(new ErrorHandler("User not found", 404));
+      }
+
       const sameTypeAddress = user.addresses.find(
         (address) => address.addressType === req.body.addressType
       );
+      
       if (sameTypeAddress) {
         return next(
           new ErrorHandler(`${req.body.addressType} address already exists`)
@@ -267,7 +305,7 @@ router.delete(
   isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const userId = req.user._id;
+      const userId = req.user.id;
       const addressId = req.params.id;
 
       await User.updateOne(
@@ -279,7 +317,11 @@ router.delete(
 
       const user = await User.findById(userId);
 
-      res.status(200).json({ success: true, user });
+      res.status(200).json({ 
+        success: true, 
+        user,
+        message: "Address deleted successfully"
+      });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
@@ -294,9 +336,11 @@ router.put(
     try {
       const user = await User.findById(req.user.id).select("+password");
 
-      const isPasswordMatched = await user.comparePassword(
-        req.body.oldPassword
-      );
+      if (!user) {
+        return next(new ErrorHandler("User not found", 404));
+      }
+
+      const isPasswordMatched = await user.comparePassword(req.body.oldPassword);
 
       if (!isPasswordMatched) {
         return next(new ErrorHandler("Old password is incorrect!", 400));
@@ -304,11 +348,11 @@ router.put(
 
       if (req.body.newPassword !== req.body.confirmPassword) {
         return next(
-          new ErrorHandler("Password doesn't matched with each other!", 400)
+          new ErrorHandler("Passwords do not match!", 400)
         );
       }
-      user.password = req.body.newPassword;
 
+      user.password = req.body.newPassword;
       await user.save();
 
       res.status(200).json({
@@ -321,14 +365,18 @@ router.put(
   })
 );
 
-// find user infoormation with the userId
+// find user information with the userId
 router.get(
   "/user-info/:id",
   catchAsyncErrors(async (req, res, next) => {
     try {
       const user = await User.findById(req.params.id);
 
-      res.status(201).json({
+      if (!user) {
+        return next(new ErrorHandler("User not found", 404));
+      }
+
+      res.status(200).json({
         success: true,
         user,
       });
@@ -348,7 +396,7 @@ router.get(
       const users = await User.find().sort({
         createdAt: -1,
       });
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         users,
       });
@@ -368,18 +416,17 @@ router.delete(
       const user = await User.findById(req.params.id);
 
       if (!user) {
-        return next(
-          new ErrorHandler("User is not available with this id", 400)
-        );
+        return next(new ErrorHandler("User not found", 404));
       }
 
-      const imageId = user.avatar.public_id;
-
-      await cloudinary.v2.uploader.destroy(imageId);
+      // Delete avatar from Cloudinary if exists
+      if (user.avatar && user.avatar.public_id) {
+        await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+      }
 
       await User.findByIdAndDelete(req.params.id);
 
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         message: "User deleted successfully!",
       });
@@ -388,14 +435,5 @@ router.delete(
     }
   })
 );
-
-// You can also remove these helper functions if not needed elsewhere
-/*
-const createActivationToken = (user) => {
-  return jwt.sign(user, process.env.ACTIVATION_SECRET, {
-    expiresIn: "5m",
-  });
-};
-*/
 
 module.exports = router;
