@@ -46,7 +46,7 @@ const Hero = () => {
     
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % images.length);
-    }, 4000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [isHovered, images.length]);
@@ -58,7 +58,7 @@ const Hero = () => {
   return (
     <div 
       ref={heroRef}
-      className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-emerald-900"
+      className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-emerald-900 z-[-2000]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -87,7 +87,7 @@ const Hero = () => {
           <div className="text-white space-y-8 animate-slide-in-left">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20 animate-fade-in-up">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse mt-12"></div>
               <span className="text-sm font-medium">Welcome to Ariaria Marketplace</span>
             </div>
 
@@ -122,9 +122,9 @@ const Hero = () => {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-8 pt-8 border-t border-white/10 animate-fade-in-up delay-600">
               {[
-                { number: "10K+", label: "Happy Customers" },
-                { number: "500+", label: "Verified Sellers" },
-                { number: "5K+", label: "Products" }
+                { number: "Very", label: "Happy Customers" },
+                { number: "Exclusive", label: "Verified Sellers" },
+                { number: "Exceptional", label: "Products" }
               ].map((stat, index) => (
                 <div key={index} className="text-center group cursor-pointer">
                   <div className="text-2xl font-bold hero-gradient-text group-hover:scale-110 transition-transform duration-300">
@@ -192,21 +192,21 @@ const Hero = () => {
             </button>
 
             {/* Floating Card */}
-            <div className="absolute -bottom-6 -left-6 bg-gradient-to-br from-blue-500 to-emerald-500 text-white p-4 rounded-2xl shadow-2xl backdrop-blur-md animate-float-card">
+            {/*<div className="absolute -bottom-6 -left-6 bg-gradient-to-br from-blue-500 to-emerald-500 text-white p-4 rounded-2xl shadow-2xl backdrop-blur-md animate-float-card">
               <div className="text-sm font-semibold">🔥 Trending Now</div>
               <div className="text-xs opacity-90">50+ new products</div>
-            </div>
+            </div>*/}
           </div>
         </div>
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/60 animate-bounce-slow">
+       {/*<div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/60 animate-bounce-slow">
         <span className="text-sm mb-2">Scroll to explore</span>
         <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
           <div className="w-1 h-3 bg-emerald-400 rounded-full mt-2 animate-pulse"></div>
         </div>
-      </div>
+      </div>*/}
 
       {/* Custom CSS for animations */}
       <style jsx>{`
