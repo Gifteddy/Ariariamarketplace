@@ -197,7 +197,7 @@ const Header = ({ activeHeading }) => {
       </div>
 
       {/* Navigation Bar - Desktop - FIXED VISIBILITY */}
-      <div className={`hidden 800px:block bg-white border-b border-gray-200 z-[999] ${
+      <div className={`hidden 800px:block bg-white text-black border-b border-gray-200 z-[999] ${
         active ? "fixed top-0 left-0 right-0 shadow-lg" : ""
       } transition-all duration-300`}>
         <div className="max-w-7xl mx-auto px-4">
