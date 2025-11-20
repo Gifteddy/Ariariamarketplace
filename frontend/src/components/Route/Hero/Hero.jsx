@@ -86,8 +86,8 @@ const Hero = () => {
           {/* Text Content - Left Side */}
           <div className="text-white space-y-8 animate-slide-in-left">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20 animate-fade-in-up">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse mt-12"></div>
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20 animate-fade-in-up mt-12">
+              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
               <span className="text-sm font-medium">Welcome to Ariaria Marketplace</span>
             </div>
 
