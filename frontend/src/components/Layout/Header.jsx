@@ -133,11 +133,11 @@ const Header = ({ activeHeading }) => {
                   categoriesData={categoriesData}
                   setDropDown={setDropDown}
                 />
-              ) : null}
+              ) : null} 
             </div>
           </div>
           {/* navitems */}
-          <div className={`${styles.noramlFlex}`}>
+          <div className={`${styles.noramlFlex} z-[-5]`}>
             <Navbar active={activeHeading} />
           </div>
 
