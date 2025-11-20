@@ -106,7 +106,7 @@ const Signup = () => {
         },
       });
 
-      toast.success("Account created successfully! Welcome to your dashboard!");
+      toast.success("Account created successfully! Welcome to Ariaria Market Place!");
       
       // Clear form
       setName("");
