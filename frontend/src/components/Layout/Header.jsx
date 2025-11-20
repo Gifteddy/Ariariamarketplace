@@ -6,10 +6,12 @@ import {
   AiOutlineHeart,
   AiOutlineSearch,
   AiOutlineShoppingCart,
+  AiOutlineFire,
 } from "react-icons/ai";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { BiMenuAltLeft } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
+import { FiTruck, FiHeadphones, FiShield } from "react-icons/fi";
 import DropDown from "./DropDown";
 import Navbar from "./Navbar";
 import { useSelector } from "react-redux";
@@ -58,14 +60,24 @@ const Header = ({ activeHeading }) => {
       <div className="bg-gradient-to-r from-blue-600 to-green-600 text-white py-2 hidden 800px:block">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center text-sm">
           <div className="flex items-center space-x-6">
-            <span>🔥 Hot Deals</span>
-            <span>🚚 Free Shipping</span>
-            <span>⭐ 24/7 Support</span>
+            <div className="flex items-center space-x-2">
+              <AiOutlineFire size={16} className="text-orange-300" />
+              <span>Hot Deals</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <FiTruck size={16} className="text-blue-200" />
+              <span>Free Shipping</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <FiHeadphones size={16} className="text-green-200" />
+              <span>24/7 Support</span>
+            </div>
           </div>
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
-              <Link to="/profile" className="hover:text-blue-200 transition-colors">
-                Welcome, {user?.name}
+              <Link to="/profile" className="hover:text-blue-200 transition-colors flex items-center space-x-2">
+                <CgProfile size={16} />
+                <span>Welcome, {user?.name}</span>
               </Link>
             ) : (
               <div className="flex space-x-4">
@@ -82,131 +94,130 @@ const Header = ({ activeHeading }) => {
       </div>
 
       {/* Main Header - Desktop */}
-      <div className={`${styles.section} bg-white border-b border-gray-200 z-[1000]`}>
-        <div className="hidden 800px:flex items-center justify-between py-4">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link to="/">
-              <img 
-                src={logo} 
-                alt="Ariaria Marketplace" 
-                className="h-12 object-contain"
-              />
-            </Link>
-          </div>
-
-          {/* Search Bar */}
-          <div className="flex-1 max-w-2xl mx-8">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search for products, brands and more..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="w-full h-12 px-4 pr-12 border-2 border-blue-500 rounded-lg focus:outline-none focus:border-green-500 transition-colors"
-              />
-              <AiOutlineSearch
-                size={24}
-                className="absolute right-3 top-3 text-gray-500 cursor-pointer hover:text-blue-600 transition-colors"
-              />
-              
-              {/* Search Results Dropdown */}
-              {searchData && searchData.length > 0 && (
-                <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl mt-1 max-h-80 overflow-y-auto z-[1000]">
-                  {searchData.map((product, index) => (
-                    <Link 
-                      key={index}
-                      to={`/product/${product._id}`}
-                      className="flex items-center p-3 hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors"
-                      onClick={() => setSearchData(null)}
-                    >
-                      <img
-                        src={product.images[0]?.url}
-                        alt={product.name}
-                        className="w-10 h-10 object-cover rounded mr-3"
-                      />
-                      <div className="flex-1">
-                        <h4 className="text-sm font-medium text-gray-900">{product.name}</h4>
-                        <p className="text-sm text-gray-600">₦{product.discountPrice || product.originalPrice}</p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-center space-x-6">
-            {/* Become Seller Button */}
-            <Link 
-              to={isSeller ? "/dashboard" : "/shop-create"}
-              className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md"
-            >
-              {isSeller ? "Dashboard" : "Become Seller"}
-            </Link>
-
-            {/* Wishlist */}
-            <div className="relative group">
-              <button
-                onClick={() => setOpenWishlist(true)}
-                className="p-2 text-gray-700 hover:text-blue-600 transition-colors relative"
-              >
-                <AiOutlineHeart size={28} />
-                {wishlist && wishlist.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
-                    {wishlist.length}
-                  </span>
-                )}
-              </button>
-            </div>
-
-            {/* Cart */}
-            <div className="relative group">
-              <button
-                onClick={() => setOpenCart(true)}
-                className="p-2 text-gray-700 hover:text-blue-600 transition-colors relative"
-              >
-                <AiOutlineShoppingCart size={28} />
-                {cart && cart.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
-                    {cart.length}
-                  </span>
-                )}
-              </button>
-            </div>
-
-            {/* Profile */}
-            <div className="relative group">
-              {isAuthenticated ? (
-                <Link to="/profile" className="flex items-center space-x-2 p-2">
-                  <img
-                    src={user?.avatar?.url}
-                    alt={user?.name}
-                    className="w-8 h-8 rounded-full object-cover border-2 border-blue-500"
-                  />
-                </Link>
-              ) : (
-                <Link to="/login" className="p-2 text-gray-700 hover:text-blue-600 transition-colors">
-                  <CgProfile size={28} />
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation Bar - Desktop - FIXED VISIBILITY */}
-      <div className={`hidden 800px:block bg-white text-black border-b border-gray-200 z-[999] ${
-        active ? "fixed top-0 left-0 right-0 shadow-lg" : ""
-      } transition-all duration-300`}>
+      <div className={`bg-white border-b border-gray-200 z-[1000] ${active ? 'fixed top-0 left-0 right-0 shadow-lg' : ''}`}>
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between py-3">
+          <div className="hidden 800px:flex items-center justify-between py-4">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <Link to="/">
+                <img 
+                  src={logo} 
+                  alt="Ariaria Marketplace" 
+                  className="h-12 object-contain"
+                />
+              </Link>
+            </div>
+
+            {/* Search Bar */}
+            <div className="flex-1 max-w-2xl mx-8">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search for products, brands and more..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="w-full h-12 px-4 pr-12 border-2 border-blue-500 rounded-lg focus:outline-none focus:border-green-500 transition-colors"
+                />
+                <AiOutlineSearch
+                  size={24}
+                  className="absolute right-3 top-3 text-gray-500 cursor-pointer hover:text-blue-600 transition-colors"
+                />
+                
+                {/* Search Results Dropdown */}
+                {searchData && searchData.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl mt-1 max-h-80 overflow-y-auto z-[1000]">
+                    {searchData.map((product, index) => (
+                      <Link 
+                        key={index}
+                        to={`/product/${product._id}`}
+                        className="flex items-center p-3 hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors"
+                        onClick={() => setSearchData(null)}
+                      >
+                        <img
+                          src={product.images[0]?.url}
+                          alt={product.name}
+                          className="w-10 h-10 object-cover rounded mr-3"
+                        />
+                        <div className="flex-1">
+                          <h4 className="text-sm font-medium text-gray-900">{product.name}</h4>
+                          <p className="text-sm text-gray-600">₦{product.discountPrice || product.originalPrice}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center space-x-4">
+              {/* Wishlist */}
+              <div className="relative">
+                <button
+                  onClick={() => setOpenWishlist(true)}
+                  className="p-2 text-gray-700 hover:text-blue-600 transition-colors relative"
+                  title="Wishlist"
+                >
+                  <AiOutlineHeart size={28} />
+                  {wishlist && wishlist.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                      {wishlist.length}
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {/* Cart */}
+              <div className="relative">
+                <button
+                  onClick={() => setOpenCart(true)}
+                  className="p-2 text-gray-700 hover:text-blue-600 transition-colors relative"
+                  title="Cart"
+                >
+                  <AiOutlineShoppingCart size={28} />
+                  {cart && cart.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+                      {cart.length}
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {/* Profile */}
+              <div className="relative">
+                {isAuthenticated ? (
+                  <Link to="/profile" className="flex items-center space-x-2 p-2" title="Profile">
+                    <img
+                      src={user?.avatar?.url}
+                      alt={user?.name}
+                      className="w-8 h-8 rounded-full object-cover border-2 border-blue-500"
+                    />
+                  </Link>
+                ) : (
+                  <Link to="/login" className="p-2 text-gray-700 hover:text-blue-600 transition-colors" title="Login">
+                    <CgProfile size={28} />
+                  </Link>
+                )}
+              </div>
+
+              {/* Become Seller Button */}
+              <Link 
+                to={isSeller ? "/dashboard" : "/shop-create"}
+                className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 shadow-md flex items-center space-x-2"
+              >
+                <span>{isSeller ? "Dashboard" : "Become Seller"}</span>
+                <IoIosArrowForward size={16} />
+              </Link>
+            </div>
+          </div>
+
+          {/* Navigation Bar - Desktop */}
+          <div className="hidden 800px:flex items-center justify-between py-3 border-t border-gray-100">
             {/* Categories Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setDropDown(!dropDown)}
-                className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
               >
                 <BiMenuAltLeft size={20} />
                 <span>All Categories</span>
@@ -224,14 +235,15 @@ const Header = ({ activeHeading }) => {
               )}
             </div>
 
-            {/* Navigation Links - FIXED: Now properly visible */}
+            {/* Navigation Links - FIXED: Dark text for visibility */}
             <div className="flex-1 flex justify-center">
               <Navbar active={activeHeading} />
             </div>
 
             {/* Additional Info */}
-            <div className="text-sm text-gray-600">
-              <span>🛡️ 100% Secure</span>
+            <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <FiShield size={18} className="text-green-500" />
+              <span>100% Secure</span>
             </div>
           </div>
         </div>
@@ -246,6 +258,7 @@ const Header = ({ activeHeading }) => {
           <button
             onClick={() => setOpen(true)}
             className="p-2 text-gray-700 hover:text-blue-600 transition-colors"
+            title="Menu"
           >
             <BiMenuAltLeft size={28} />
           </button>
@@ -263,6 +276,7 @@ const Header = ({ activeHeading }) => {
           <button
             onClick={() => setOpenCart(true)}
             className="p-2 text-gray-700 hover:text-blue-600 transition-colors relative"
+            title="Cart"
           >
             <AiOutlineShoppingCart size={28} />
             {cart && cart.length > 0 && (
@@ -372,10 +386,11 @@ const Header = ({ activeHeading }) => {
               {/* Become Seller */}
               <Link 
                 to={isSeller ? "/dashboard" : "/shop-create"}
-                className="block w-full bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white text-center py-3 rounded-lg font-medium transition-all duration-300"
+                className="block w-full bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white text-center py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center space-x-2"
                 onClick={() => setOpen(false)}
               >
-                {isSeller ? "Seller Dashboard" : "Become a Seller"}
+                <span>{isSeller ? "Seller Dashboard" : "Become a Seller"}</span>
+                <IoIosArrowForward size={16} />
               </Link>
 
               {/* Auth Links */}
@@ -383,10 +398,11 @@ const Header = ({ activeHeading }) => {
                 <div className="flex space-x-4 pt-4">
                   <Link
                     to="/login"
-                    className="flex-1 text-center py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+                    className="flex-1 text-center py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center space-x-2"
                     onClick={() => setOpen(false)}
                   >
-                    Login
+                    <CgProfile size={16} />
+                    <span>Login</span>
                   </Link>
                   <Link
                     to="/sign-up"
