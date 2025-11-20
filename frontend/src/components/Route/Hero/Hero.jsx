@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 
 // Import your local images
 import bannerImage1 from "./bannerImage1.jpg";
@@ -53,38 +52,7 @@ const Hero = () => {
 
   const nextImage = () => setCurrentImage((prev) => (prev + 1) % images.length);
   const prevImage = () => setCurrentImage((prev) => (prev - 1 + images.length) % images.length);
-
   const goToImage = (index) => setCurrentImage(index);
-
-  // Floating animation variants
-  const floatingAnimation = {
-    animate: {
-      y: [0, -10, 0],
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  };
-
-  const slideInLeft = {
-    initial: { x: -100, opacity: 0 },
-    animate: { x: 0, opacity: 1 },
-    transition: { duration: 0.8, ease: "easeOut" }
-  };
-
-  const slideInRight = {
-    initial: { x: 100, opacity: 0 },
-    animate: { x: 0, opacity: 1 },
-    transition: { duration: 0.8, ease: "easeOut" }
-  };
-
-  const fadeInUp = {
-    initial: { y: 50, opacity: 0 },
-    animate: { y: 0, opacity: 1 },
-    transition: { duration: 0.6, ease: "easeOut" }
-  };
 
   return (
     <div 
@@ -96,36 +64,13 @@ const Hero = () => {
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         {/* Floating Shapes */}
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-20 h-20 bg-gradient-to-r from-blue-500 to-emerald-400 rounded-full opacity-20 blur-xl"
-          animate={{
-            x: [0, 30, 0],
-            y: [0, -30, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        <motion.div
-          className="absolute top-3/4 right-1/3 w-16 h-16 bg-gradient-to-r from-emerald-400 to-blue-500 rounded-full opacity-15 blur-lg"
-          animate={{
-            x: [0, -20, 0],
-            y: [0, 20, 0],
-            scale: [1.2, 1, 1.2],
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
+        <div className="absolute top-1/4 left-1/4 w-20 h-20 bg-gradient-to-r from-blue-500 to-emerald-400 rounded-full opacity-20 blur-xl animate-float-slow"></div>
+        <div className="absolute top-3/4 right-1/3 w-16 h-16 bg-gradient-to-r from-emerald-400 to-blue-500 rounded-full opacity-15 blur-lg animate-float-medium"></div>
+        <div className="absolute top-1/2 right-1/4 w-12 h-12 bg-gradient-to-r from-blue-400 to-emerald-300 rounded-full opacity-10 blur-md animate-float-fast"></div>
         
-        {/* Grid Pattern */}
+        {/* Grid Pattern with Parallax */}
         <div 
-          className="absolute inset-0 opacity-10"
+          className="absolute inset-0 opacity-10 transition-transform duration-100 ease-out"
           style={{
             backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
             backgroundSize: '50px 50px',
@@ -138,177 +83,305 @@ const Hero = () => {
       <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
           {/* Text Content - Left Side */}
-          <motion.div 
-            className="text-white space-y-8"
-            initial="initial"
-            animate="animate"
-          >
+          <div className="text-white space-y-8 animate-slide-in-left">
             {/* Badge */}
-            <motion.div 
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20"
-              variants={fadeInUp}
-            >
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20 animate-fade-in-up">
               <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
               <span className="text-sm font-medium">Welcome to Ariaria Marketplace</span>
-            </motion.div>
+            </div>
 
             {/* Headline */}
-            <motion.h1 
-              className="text-5xl lg:text-7xl font-bold leading-tight"
-              variants={slideInLeft}
-            >
-              <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
+              <span className="hero-gradient-text">
                 {headlines[currentImage]}
               </span>
-            </motion.h1>
+            </h1>
 
             {/* Subtitle */}
-            <motion.p 
-              className="text-xl text-gray-300 leading-relaxed max-w-2xl"
-              variants={fadeInUp}
-            >
+            <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-2xl animate-fade-in-up delay-200">
               {subtitles[currentImage]}
-            </motion.p>
+            </p>
 
             {/* CTA Buttons */}
-            <motion.div 
-              className="flex flex-col sm:flex-row gap-4"
-              variants={fadeInUp}
-            >
+            <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up delay-400">
               <Link to="/products">
-                <motion.button 
-                  className="group relative bg-gradient-to-r from-blue-500 to-emerald-500 text-white px-8 py-4 rounded-xl font-semibold text-lg overflow-hidden"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
+                <button className="hero-primary-btn group">
                   <span className="relative z-10">Start Shopping Now</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <motion.div 
-                    className="absolute inset-0 bg-white/20"
-                    initial={{ x: '-100%' }}
-                    whileHover={{ x: '100%' }}
-                    transition={{ duration: 0.5 }}
-                  />
-                </motion.button>
+                  <div className="hero-btn-overlay"></div>
+                </button>
               </Link>
               
               <Link to="/become-seller">
-                <motion.button 
-                  className="group border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold text-lg backdrop-blur-md"
-                  whileHover={{ scale: 1.05, borderColor: 'rgba(74, 222, 128, 0.5)' }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
-                    Become a Seller
-                  </span>
-                </motion.button>
+                <button className="hero-secondary-btn group">
+                  <span className="hero-gradient-text">Become a Seller</span>
+                </button>
               </Link>
-            </motion.div>
+            </div>
 
             {/* Stats */}
-            <motion.div 
-              className="grid grid-cols-3 gap-8 pt-8 border-t border-white/10"
-              variants={fadeInUp}
-            >
+            <div className="grid grid-cols-3 gap-8 pt-8 border-t border-white/10 animate-fade-in-up delay-600">
               {[
                 { number: "10K+", label: "Happy Customers" },
                 { number: "500+", label: "Verified Sellers" },
                 { number: "5K+", label: "Products" }
               ].map((stat, index) => (
-                <div key={index} className="text-center">
-                  <motion.div 
-                    className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent"
-                    whileHover={{ scale: 1.1 }}
-                  >
+                <div key={index} className="text-center group cursor-pointer">
+                  <div className="text-2xl font-bold hero-gradient-text group-hover:scale-110 transition-transform duration-300">
                     {stat.number}
-                  </motion.div>
-                  <div className="text-sm text-gray-400 mt-1">{stat.label}</div>
+                  </div>
+                  <div className="text-sm text-gray-400 mt-1 group-hover:text-gray-300 transition-colors">
+                    {stat.label}
+                  </div>
                 </div>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Image Carousel - Right Side */}
-          <motion.div 
-            className="relative h-96 lg:h-[500px] rounded-3xl overflow-hidden shadow-2xl"
-            variants={slideInRight}
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.3 }}
-          >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentImage}
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url(${images[currentImage]})` }}
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.8, ease: "easeInOut" }}
-              >
-                {/* Overlay Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
-                
-                {/* Image Navigation */}
-                <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-3">
-                  {images.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => goToImage(index)}
-                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                        currentImage === index 
-                          ? 'bg-emerald-400 scale-125' 
-                          : 'bg-white/50 hover:bg-white/80'
-                      }`}
-                    />
-                  ))}
+          <div className="relative h-80 md:h-96 lg:h-[500px] rounded-3xl overflow-hidden shadow-2xl group animate-slide-in-right">
+            {/* Image Container */}
+            <div className="relative w-full h-full overflow-hidden">
+              {images.map((image, index) => (
+                <div
+                  key={index}
+                  className={`absolute inset-0 w-full h-full bg-cover bg-center transition-all duration-700 ease-in-out ${
+                    index === currentImage 
+                      ? 'opacity-100 scale-100' 
+                      : 'opacity-0 scale-105'
+                  }`}
+                  style={{ backgroundImage: `url(${image})` }}
+                >
+                  {/* Overlay Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
                 </div>
+              ))}
+            </div>
+            
+            {/* Image Navigation Dots */}
+            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-3">
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToImage(index)}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    currentImage === index 
+                      ? 'bg-emerald-400 scale-125 shadow-lg shadow-emerald-400/50' 
+                      : 'bg-white/50 hover:bg-white/80 hover:scale-110'
+                  }`}
+                />
+              ))}
+            </div>
 
-                {/* Navigation Arrows */}
-                <button
-                  onClick={prevImage}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full backdrop-blur-md transition-all duration-300"
-                  whileHover={{ scale: 1.1 }}
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <button
-                  onClick={nextImage}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full backdrop-blur-md transition-all duration-300"
-                  whileHover={{ scale: 1.1 }}
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </motion.div>
-            </AnimatePresence>
+            {/* Navigation Arrows */}
+            <button
+              onClick={prevImage}
+              className="hero-nav-btn left-4 group"
+            >
+              <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              onClick={nextImage}
+              className="hero-nav-btn right-4 group"
+            >
+              <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
 
             {/* Floating Card */}
-            <motion.div 
-              className="absolute -bottom-6 -left-6 bg-gradient-to-br from-blue-500 to-emerald-500 text-white p-4 rounded-2xl shadow-2xl backdrop-blur-md"
-              variants={floatingAnimation}
-              animate="animate"
-            >
+            <div className="absolute -bottom-6 -left-6 bg-gradient-to-br from-blue-500 to-emerald-500 text-white p-4 rounded-2xl shadow-2xl backdrop-blur-md animate-float-card">
               <div className="text-sm font-semibold">🔥 Trending Now</div>
               <div className="text-xs opacity-90">50+ new products</div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Scroll Indicator */}
-      <motion.div 
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/60"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      >
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/60 animate-bounce-slow">
         <span className="text-sm mb-2">Scroll to explore</span>
         <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-emerald-400 rounded-full mt-2"></div>
+          <div className="w-1 h-3 bg-emerald-400 rounded-full mt-2 animate-pulse"></div>
         </div>
-      </motion.div>
+      </div>
+
+      {/* Custom CSS for animations */}
+      <style jsx>{`
+        .hero-gradient-text {
+          background: linear-gradient(135deg, #60a5fa 0%, #34d399 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .hero-primary-btn {
+          position: relative;
+          background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+          color: white;
+          padding: 1rem 2rem;
+          border-radius: 0.75rem;
+          font-weight: 600;
+          font-size: 1.125rem;
+          overflow: hidden;
+          transition: all 0.3s ease;
+        }
+
+        .hero-primary-btn:hover {
+          transform: scale(1.05);
+          box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3);
+        }
+
+        .hero-btn-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, #1d4ed8 0%, #047857 100%);
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+
+        .hero-primary-btn:hover .hero-btn-overlay {
+          opacity: 1;
+        }
+
+        .hero-secondary-btn {
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          color: white;
+          padding: 1rem 2rem;
+          border-radius: 0.75rem;
+          font-weight: 600;
+          font-size: 1.125rem;
+          backdrop-filter: blur(12px);
+          transition: all 0.3s ease;
+        }
+
+        .hero-secondary-btn:hover {
+          border-color: rgba(52, 211, 153, 0.5);
+          transform: scale(1.05);
+          box-shadow: 0 10px 30px rgba(52, 211, 153, 0.2);
+        }
+
+        .hero-nav-btn {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background: rgba(0, 0, 0, 0.3);
+          color: white;
+          padding: 0.75rem;
+          border-radius: 50%;
+          backdrop-filter: blur(12px);
+          transition: all 0.3s ease;
+        }
+
+        .hero-nav-btn:hover {
+          background: rgba(0, 0, 0, 0.5);
+          transform: translateY(-50%) scale(1.1);
+        }
+
+        /* Animations */
+        @keyframes float-slow {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          50% { transform: translate(30px, -30px) rotate(180deg); }
+        }
+
+        @keyframes float-medium {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          50% { transform: translate(-20px, 20px) rotate(-180deg); }
+        }
+
+        @keyframes float-fast {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(15px, -15px) scale(1.2); }
+        }
+
+        @keyframes float-card {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        @keyframes slide-in-left {
+          from {
+            opacity: 0;
+            transform: translateX(-50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes slide-in-right {
+          from {
+            opacity: 0;
+            transform: translateX(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+
+        .animate-float-slow {
+          animation: float-slow 8s ease-in-out infinite;
+        }
+
+        .animate-float-medium {
+          animation: float-medium 6s ease-in-out infinite;
+        }
+
+        .animate-float-fast {
+          animation: float-fast 4s ease-in-out infinite;
+        }
+
+        .animate-float-card {
+          animation: float-card 3s ease-in-out infinite;
+        }
+
+        .animate-slide-in-left {
+          animation: slide-in-left 0.8s ease-out;
+        }
+
+        .animate-slide-in-right {
+          animation: slide-in-right 0.8s ease-out;
+        }
+
+        .animate-fade-in-up {
+          animation: fade-in-up 0.6s ease-out;
+        }
+
+        .animate-bounce-slow {
+          animation: bounce-slow 2s ease-in-out infinite;
+        }
+
+        .delay-200 {
+          animation-delay: 0.2s;
+        }
+
+        .delay-400 {
+          animation-delay: 0.4s;
+        }
+
+        .delay-600 {
+          animation-delay: 0.6s;
+        }
+      `}</style>
     </div>
   );
 };
