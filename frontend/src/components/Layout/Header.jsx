@@ -54,8 +54,8 @@ const Header = ({ activeHeading }) => {
 
   return (
     <>
-      <div className= {`${styles.section}`} >
-        <div className="hidden 800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between z-[200]">
+      <div className={`${styles.section} z-[1000]`} >
+        <div className="hidden 800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between z-[1000]">
           <div>
           <Link to="/">
           {/* Use the imported logo */}
@@ -76,7 +76,7 @@ const Header = ({ activeHeading }) => {
               className="absolute right-2 top-1.5 cursor-pointer"
             />
             {searchData && searchData.length !== 0 ? (
-              <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
+              <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[1000] p-4">
                 {searchData &&
                   searchData.map((i, index) => {
                     return (
@@ -108,15 +108,15 @@ const Header = ({ activeHeading }) => {
       </div>
       <div
         className={`${
-          active === true ? "shadow-sm fixed top-0 left-0 z-10" : null
-        } transition hidden 800px:flex items-center justify-between w-full bg-[#3321c8] h-[70px]`}
+          active === true ? "shadow-sm fixed top-0 left-0 z-[1000]" : null
+        } transition hidden 800px:flex items-center justify-between w-full bg-[#3321c8] h-[70px] z-[1000]`}
       >
         <div
-          className={`${styles.section} relative ${styles.noramlFlex} justify-between`}
+          className={`${styles.section} relative ${styles.noramlFlex} justify-between z-[1000]`}
         >
           {/* categories */}
           <div onClick={() => setDropDown(!dropDown)}>
-            <div className="relative h-[60px] mt-[10px] w-[270px] hidden 1000px:block">
+            <div className="relative h-[60px] mt-[10px] w-[270px] hidden 1000px:block z-[1000]">
               <BiMenuAltLeft size={30} className="absolute top-3 left-2" />
               <button
                 className={`h-[100%] w-full flex justify-between items-center pl-10 bg-white font-sans text-lg font-[500] select-none rounded-t-md`}
@@ -201,9 +201,9 @@ const Header = ({ activeHeading }) => {
       {/* mobile header */}
       <div
         className={`${
-          active === true ? "shadow-sm fixed top-0 left-0 z-10" : null
+          active === true ? "shadow-sm fixed top-0 left-0 z-[1000]" : null
         }
-      w-full h-[60px] bg-[#fff] z-50 top-0 left-0 shadow-sm 800px:hidden`}
+      w-full h-[60px] bg-[#fff] z-[1000] top-0 left-0 shadow-sm 800px:hidden`}
       >
         <div className="w-full flex items-center justify-between">
           <div>
@@ -240,8 +240,8 @@ const Header = ({ activeHeading }) => {
 
         {/* header sidebar */}
           {open && (
-          <div className="fixed w-full bg-[#0000005f] z-20 h-full top-0 left-0">
-            <div className="fixed w-[70%] bg-[#fff] h-screen top-0 left-0 z-10 overflow-y-scroll">
+          <div className="fixed w-full bg-[#0000005f] z-[2000] h-full top-0 left-0">
+            <div className="fixed w-[70%] bg-[#fff] h-screen top-0 left-0 z-[2000] overflow-y-scroll">
               <div className="w-full justify-between flex pr-3">
                 <div>
                   <div
@@ -272,7 +272,7 @@ const Header = ({ activeHeading }) => {
                 />
                 {/* Render search results */}
                 {searchData && searchData.length > 0 && (
-                  <div className="absolute bg-[#fff] z-20 shadow w-full left-0 p-3 max-h-[300px] overflow-y-auto">
+                  <div className="absolute bg-[#fff] z-[2000] shadow w-full left-0 p-3 max-h-[300px] overflow-y-auto">
                     {searchData.map((i, index) => (
                       <Link to={`/product/${i._id}`} key={index}>
                         <div className="flex items-center mb-3">
