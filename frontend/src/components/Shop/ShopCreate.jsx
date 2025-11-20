@@ -106,6 +106,8 @@ const ShopCreate = () => {
     formData.append("zipCode", zipCode);
     formData.append("address", address);
     formData.append("phoneNumber", phoneNumber);
+    
+    // Only append avatar if it exists
     if (avatar) {
       formData.append("avatar", avatar);
     }
