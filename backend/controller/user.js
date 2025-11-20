@@ -9,7 +9,7 @@ const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
 const { isAuthenticated, isAdmin } = require("../middleware/auth");
 
-// create user
+// create user - WITHOUT EMAIL VERIFICATION
 
 // Import multer configuration
 const upload = require("../utils/multer"); // Adjust the path to your multer setup
@@ -17,7 +17,7 @@ const upload = require("../utils/multer"); // Adjust the path to your multer set
 router.post(
   "/create-user",
   upload.single("avatar"), // Handle a single file upload with field name "avatar"
-  async (req, res, next) => {
+  catchAsyncErrors(async (req, res, next) => {
     try {
       const { name, email, password } = req.body;
 
@@ -40,8 +40,8 @@ router.post(
         }
       });
 
-      // Create a new user object
-      const user = {
+      // Create user directly without activation
+      const user = await User.create({
         name,
         email,
         password,
@@ -49,75 +49,24 @@ router.post(
           public_id: result.public_id,
           url: result.secure_url,
         },
-      };
+      });
 
-      // Generate activation token
-      const activationToken = createActivationToken(user);
-      
-      const activationUrl = `https://www.ariariamarketplace.com.ng/activation/${activationToken}`;
-     //const activationUrl = `https://ariariamarketplace.vercel.app/activation/${activationToken}`;
-    //const activationUrl = `http://localhost:3000/activation/${activationToken}`;
+      // Send token directly (auto-activate)
+      sendToken(user, 201, res);
 
-      try {
-        // Send activation email
-        await sendMail({
-          email: user.email,
-          subject: "Activate your account",
-          message: `Hello ${user.name}, please click on the link to activate your account: ${activationUrl}`,
-        });
-
-        res.status(201).json({
-          success: true,
-          message: `Please check your email: ${user.email} to activate your account!`,
-        });
-      } catch (error) {
-        return next(new ErrorHandler(error.message, 500));
-      }
     } catch (error) {
       return next(new ErrorHandler(error.message, 400));
     }
-  }
+  })
 );
 
-
-
-// create activation token
-const createActivationToken = (user) => {
-  return jwt.sign(user, process.env.ACTIVATION_SECRET, {
-    expiresIn: "5m",
-  });
-};
-
-// activate user
+// Remove or keep the activation route (it won't be used anymore)
+// activate user (optional - you can remove this if not needed)
 router.post(
   "/activation",
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { activation_token } = req.body;
-
-      const newUser = jwt.verify(
-        activation_token,
-        process.env.ACTIVATION_SECRET
-      );
-
-      if (!newUser) {
-        return next(new ErrorHandler("Invalid token", 400));
-      }
-      const { name, email, password, avatar } = newUser;
-
-      let user = await User.findOne({ email });
-
-      if (user) {
-        return next(new ErrorHandler("User already exists", 400));
-      }
-      user = await User.create({
-        name,
-        email,
-        avatar,
-        password,
-      });
-
-      sendToken(user, 201, res);
+      return next(new ErrorHandler("Email verification is disabled", 400));
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
@@ -439,5 +388,14 @@ router.delete(
     }
   })
 );
+
+// You can also remove these helper functions if not needed elsewhere
+/*
+const createActivationToken = (user) => {
+  return jwt.sign(user, process.env.ACTIVATION_SECRET, {
+    expiresIn: "5m",
+  });
+};
+*/
 
 module.exports = router;
