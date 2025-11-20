@@ -94,6 +94,7 @@ const Signup = () => {
     formData.append("name", name.trim());
     formData.append("email", email);
     formData.append("password", password);
+    // Only append avatar if it exists
     if (avatar) {
       formData.append("avatar", avatar);
     }
@@ -105,7 +106,7 @@ const Signup = () => {
         },
       });
 
-      toast.success("Account created successfully! Welcome!");
+      toast.success("Account created successfully! Welcome to your dashboard!");
       
       // Clear form
       setName("");
@@ -114,7 +115,7 @@ const Signup = () => {
       setConfirmPassword("");
       setAvatar(null);
       
-      // Redirect to homepage after successful signup
+      // Redirect to dashboard after successful signup
       setTimeout(() => {
         navigate("/");
       }, 1500);
