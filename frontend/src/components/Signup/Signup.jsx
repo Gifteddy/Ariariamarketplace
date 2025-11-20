@@ -117,7 +117,7 @@ const Signup = () => {
       
       // Redirect to dashboard after successful signup
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 1500);
 
     } catch (error) {
