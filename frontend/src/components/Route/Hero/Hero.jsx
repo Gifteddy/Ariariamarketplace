@@ -121,9 +121,9 @@ const Hero = () => {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-8 pt-8 border-t border-white/10 animate-fade-in-up delay-600">
               {[
-                { number: "10K+", label: "Happy Customers" },
-                { number: "500+", label: "Verified Sellers" },
-                { number: "5K+", label: "Products" }
+                { number: "Guaranteed ", label: "Happy Customers" },
+                { number: "Exclusive", label: "Verified Sellers" },
+                { number: "Exceptional", label: "Products" }
               ].map((stat, index) => (
                 <div key={index} className="text-center group cursor-pointer">
                   <div className="text-2xl font-bold hero-gradient-text group-hover:scale-110 transition-transform duration-300">
@@ -190,22 +190,7 @@ const Hero = () => {
               </svg>
             </button>
 
-            {/* Floating Card */}
-            <div className="absolute -bottom-6 -left-6 bg-gradient-to-br from-blue-500 to-emerald-500 text-white p-4 rounded-2xl shadow-2xl backdrop-blur-md animate-float-card">
-              <div className="text-sm font-semibold">🔥 Trending Now</div>
-              <div className="text-xs opacity-90">50+ new products</div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white/60 animate-bounce-slow">
-        <span className="text-sm mb-2">Scroll to explore</span>
-        <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-emerald-400 rounded-full mt-2 animate-pulse"></div>
-        </div>
-      </div>
 
       {/* Custom CSS for animations */}
       <style jsx>{`
