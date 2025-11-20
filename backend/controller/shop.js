@@ -12,13 +12,15 @@ const sendShopToken = require("../utils/shopToken");
 // Import multer configuration
 const upload = require("../utils/multer"); // Adjust the path to your multer setup
 
-//create shop
+//create shop - WITHOUT EMAIL VERIFICATION
 router.post(
   "/create-shop",
   upload.single("avatar"), // Add multer middleware
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { email } = req.body;
+      const { email, name, password, address, phoneNumber, zipCode } = req.body;
+      
+      // Check if user already exists
       const sellerEmail = await Shop.findOne({ email });
       if (sellerEmail) {
         return next(new ErrorHandler("User already exists", 400));
@@ -27,89 +29,38 @@ router.post(
       // Use the uploaded file path
       const filePath = req.file ? req.file.path : null;
 
-      const seller = {
-        name: req.body.name,
-        email: email,
-        password: req.body.password,
+      // Create seller directly without activation
+      const seller = await Shop.create({
+        name,
+        email,
+        password,
         avatar: {
-          public_id: null, // You may populate this if using Cloudinary
-          url: filePath, // Save the local file path for now
+          public_id: null,
+          url: filePath,
         },
-        address: req.body.address,
-        phoneNumber: req.body.phoneNumber,
-        zipCode: req.body.zipCode,
-      };
+        address,
+        phoneNumber,
+        zipCode,
+      });
 
-      const activationToken = createActivationToken(seller);
+      // Send token directly (auto-activate)
+      sendShopToken(seller, 201, res);
 
-
-     const activationUrl = `https://www.ariariamarketplace.com.ng/seller/activation/${activationToken}`;
-      //const activationUrl = `https://ariariamarketplace.vercel.app/seller/activation/${activationToken}`;
-      //const activationUrl = `http://localhost:3000/seller/activation/${activationToken}`;
-
-      try {
-        await sendMail({
-          email: seller.email,
-          subject: "Activate your Shop",
-          message: `Hello ${seller.name}, please click on the link to activate your shop: ${activationUrl}`,
-        });
-        res.status(201).json({
-          success: true,
-          message: `Please check your email: ${seller.email} to activate your shop!`,
-        });
-      } catch (error) {
-        return next(new ErrorHandler(error.message, 500));
-      }
     } catch (error) {
       return next(new ErrorHandler(error.message, 400));
     }
   })
 );
 
+// Remove or keep the activation route (it won't be used anymore)
+// You can remove the entire activation route if you want
 
-
-// create activation token
-const createActivationToken = (seller) => {
-  return jwt.sign(seller, process.env.ACTIVATION_SECRET, {
-    expiresIn: "5m",
-  });
-};
-
-// activate user
+// activate user (optional - you can remove this if not needed)
 router.post(
   "/activation",
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const { activation_token } = req.body;
-
-      const newSeller = jwt.verify(
-        activation_token,
-        process.env.ACTIVATION_SECRET
-      );
-
-      if (!newSeller) {
-        return next(new ErrorHandler("Invalid token", 400));
-      }
-      const { name, email, password, avatar, zipCode, address, phoneNumber } =
-        newSeller;
-
-      let seller = await Shop.findOne({ email });
-
-      if (seller) {
-        return next(new ErrorHandler("User already exists", 400));
-      }
-
-      seller = await Shop.create({
-        name,
-        email,
-        avatar,
-        password,
-        zipCode,
-        address,
-        phoneNumber,
-      });
-
-      sendShopToken(seller, 201, res);
+      return next(new ErrorHandler("Email verification is disabled", 400));
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
@@ -368,5 +319,14 @@ router.delete(
     }
   })
 );
+
+// You can also remove these helper functions if not needed elsewhere
+/*
+const createActivationToken = (seller) => {
+  return jwt.sign(seller, process.env.ACTIVATION_SECRET, {
+    expiresIn: "5m",
+  });
+};
+*/
 
 module.exports = router;
