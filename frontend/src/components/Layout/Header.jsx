@@ -265,13 +265,13 @@ const Header = ({ activeHeading }) => {
           </button>
 
           {/* Logo */}
-          <Link to="/" className="flex-shrink-0">
-            <img 
-              src={logo} 
-              alt="Ariaria Marketplace" 
-              className="h-11 object-contain"
-            />
-          </Link>
+<Link to="/" className="flex-shrink-0">
+  <img 
+    src={logo} 
+    alt="Ariaria Marketplace" 
+    className="h-14 object-contain"
+  />
+</Link>
 
           {/* Cart Icon */}
           <button
