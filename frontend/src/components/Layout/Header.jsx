@@ -269,7 +269,7 @@ const Header = ({ activeHeading }) => {
             <img 
               src={logo} 
               alt="Ariaria Marketplace" 
-              className="h-15 object-contain"
+              className="h-11 object-contain"
             />
           </Link>
 
