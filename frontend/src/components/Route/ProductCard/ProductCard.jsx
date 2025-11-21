@@ -68,7 +68,7 @@ const ProductCard = ({ data, isEvent }) => {
       <div className="relative h-64 overflow-hidden bg-gray-50">
         {/* Discount Badge - FIXED z-index */}
         {discountPercentage > 0 && (
-          <div className="absolute top-3 left-3 z-5">
+          <div className="absolute top-3 left-3 z-3">
             <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
               -{discountPercentage}%
             </span>
@@ -77,7 +77,7 @@ const ProductCard = ({ data, isEvent }) => {
 
         {/* Stock Status - FIXED z-index */}
         {data.stock < 1 && (
-          <div className="absolute top-3 right-3 z-5">
+          <div className="absolute top-3 right-3 z-3">
             <span className="bg-gray-800 text-white text-xs font-bold px-2 py-1 rounded-full">
               Out of Stock
             </span>
@@ -87,7 +87,7 @@ const ProductCard = ({ data, isEvent }) => {
         {/* Wishlist Button - FIXED z-index */}
         <button
           onClick={() => click ? removeFromWishlistHandler(data) : addToWishlistHandler(data)}
-          className={`absolute top-3 right-3 z-5 p-2 rounded-full backdrop-blur-sm transition-all duration-300 transform hover:scale-110 ${
+          className={`absolute top-3 right-3 z-3 p-2 rounded-full backdrop-blur-sm transition-all duration-300 transform hover:scale-110 ${
             click 
               ? "bg-red-500/90 text-white shadow-lg" 
               : "bg-white/80 text-gray-600 hover:bg-white hover:text-red-500"
