@@ -54,8 +54,8 @@ const Header = ({ activeHeading }) => {
 
   return (
     <>
-      <div className={`${styles.section} z-50`}>
-        <div className="hidden 800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between z-50">
+      <div className={`${styles.section} z-1000`}>
+        <div className="hidden 800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between z-1000">
           <div>
           <Link to="/">
           {/* Use the imported logo */}
@@ -108,7 +108,7 @@ const Header = ({ activeHeading }) => {
       </div>
       <div
         className={`${
-          active === true ? "shadow-sm fixed top-0 left-0 z-10" : null
+          active === true ? "shadow-sm fixed top-0 left-0 z-1000" : null
         } transition hidden 800px:flex items-center justify-between w-full bg-[#3321c8] h-[70px]`}
       >
         <div
