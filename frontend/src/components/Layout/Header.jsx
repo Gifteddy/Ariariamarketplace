@@ -66,7 +66,7 @@ const Header = ({ activeHeading }) => {
             </div>
             <div className="flex items-center space-x-2">
               <FiTruck size={16} className="text-blue-200" />
-              <span>Free Shipping</span>
+              <span>Fast Delivery</span>
             </div>
             <div className="flex items-center space-x-2">
               <FiHeadphones size={16} className="text-green-200" />
@@ -213,7 +213,7 @@ const Header = ({ activeHeading }) => {
           </div>
 
           {/* Navigation Bar - Desktop - Reduced spacing: changed py-3 to py-2 */}
-          <div className="hidden 800px:flex items-center justify-between py-2 border-t border-gray-100">
+          <div className="hidden 800px:flex items-center justify-between py-1 border-t border-gray-100">
             {/* Categories Dropdown */}
             <div className="relative">
               <button
@@ -269,7 +269,7 @@ const Header = ({ activeHeading }) => {
             <img 
               src={logo} 
               alt="Ariaria Marketplace" 
-              className="h-10 object-contain"
+              className="h-15 object-contain"
             />
           </Link>
 
