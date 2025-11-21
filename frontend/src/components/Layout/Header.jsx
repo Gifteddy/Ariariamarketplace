@@ -96,7 +96,8 @@ const Header = ({ activeHeading }) => {
       {/* Main Header - Desktop */}
       <div className={`bg-white border-b border-gray-200 z-[1000] ${active ? 'fixed top-0 left-0 right-0 shadow-lg' : ''}`}>
         <div className="max-w-7xl mx-auto px-4">
-          <div className="hidden 800px:flex items-center justify-between py-4">
+          {/* Reduced spacing: changed py-4 to py-3 */}
+          <div className="hidden 800px:flex items-center justify-between py-3">
             {/* Logo */}
             <div className="flex-shrink-0">
               <Link to="/">
@@ -211,8 +212,8 @@ const Header = ({ activeHeading }) => {
             </div>
           </div>
 
-          {/* Navigation Bar - Desktop */}
-          <div className="hidden 800px:flex items-center justify-between py-3 border-t border-gray-100">
+          {/* Navigation Bar - Desktop - Reduced spacing: changed py-3 to py-2 */}
+          <div className="hidden 800px:flex items-center justify-between py-2 border-t border-gray-100">
             {/* Categories Dropdown */}
             <div className="relative">
               <button
@@ -235,7 +236,7 @@ const Header = ({ activeHeading }) => {
               )}
             </div>
 
-            {/* Navigation Links - FIXED: Dark text for visibility */}
+            {/* Navigation Links */}
             <div className="flex-1 flex justify-center">
               <Navbar active={activeHeading} />
             </div>
@@ -249,7 +250,7 @@ const Header = ({ activeHeading }) => {
         </div>
       </div>
 
-      {/* Mobile Header */}
+      {/* Mobile Header - REMOVED search bar from here */}
       <div className={`800px:hidden bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-[1000] ${
         active ? 'shadow-lg' : ''
       } transition-shadow duration-300`}>
@@ -286,47 +287,7 @@ const Header = ({ activeHeading }) => {
             )}
           </button>
         </div>
-
-        {/* Mobile Search Bar */}
-        <div className="px-4 pb-4">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-              className="w-full h-12 px-4 pr-12 border-2 border-blue-500 rounded-lg focus:outline-none focus:border-green-500 transition-colors"
-            />
-            <AiOutlineSearch
-              size={24}
-              className="absolute right-3 top-3 text-gray-500"
-            />
-            
-            {/* Mobile Search Results */}
-            {searchData && searchData.length > 0 && (
-              <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto z-[1000]">
-                {searchData.map((product, index) => (
-                  <Link 
-                    key={index}
-                    to={`/product/${product._id}`}
-                    className="flex items-center p-3 hover:bg-blue-50 border-b border-gray-100 last:border-b-0"
-                    onClick={() => setSearchData(null)}
-                  >
-                    <img
-                      src={product.images[0]?.url}
-                      alt={product.name}
-                      className="w-8 h-8 object-cover rounded mr-3"
-                    />
-                    <div className="flex-1">
-                      <h4 className="text-sm font-medium text-gray-900 line-clamp-1">{product.name}</h4>
-                      <p className="text-xs text-gray-600">₦{product.discountPrice || product.originalPrice}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+        {/* Search bar removed from mobile header */}
       </div>
 
       {/* Mobile Sidebar */}
@@ -364,6 +325,45 @@ const Header = ({ activeHeading }) => {
 
             {/* Sidebar Content */}
             <div className="p-4 space-y-6">
+              {/* Search Bar - MOVED to sidebar */}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="w-full h-12 px-4 pr-12 border-2 border-blue-500 rounded-lg focus:outline-none focus:border-green-500 transition-colors"
+                />
+                <AiOutlineSearch
+                  size={24}
+                  className="absolute right-3 top-3 text-gray-500"
+                />
+                
+                {/* Mobile Search Results */}
+                {searchData && searchData.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto z-[1000]">
+                    {searchData.map((product, index) => (
+                      <Link 
+                        key={index}
+                        to={`/product/${product._id}`}
+                        className="flex items-center p-3 hover:bg-blue-50 border-b border-gray-100 last:border-b-0"
+                        onClick={() => setSearchData(null)}
+                      >
+                        <img
+                          src={product.images[0]?.url}
+                          alt={product.name}
+                          className="w-8 h-8 object-cover rounded mr-3"
+                        />
+                        <div className="flex-1">
+                          <h4 className="text-sm font-medium text-gray-900 line-clamp-1">{product.name}</h4>
+                          <p className="text-xs text-gray-600">₦{product.discountPrice || product.originalPrice}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               {/* Wishlist */}
               <button
                 onClick={() => { setOpenWishlist(true); setOpen(false); }}
@@ -425,7 +425,7 @@ const Header = ({ activeHeading }) => {
       {openWishlist && <Wishlist setOpenWishlist={setOpenWishlist} />}
 
       {/* Spacer for fixed mobile header */}
-      <div className="800px:hidden h-28"></div>
+      <div className="800px:hidden h-20"></div>
     </>
   );
 };
