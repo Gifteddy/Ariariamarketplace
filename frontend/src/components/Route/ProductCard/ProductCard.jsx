@@ -87,7 +87,7 @@ const ProductCard = ({ data, isEvent }) => {
         {/* Wishlist Button - FIXED z-index */}
         <button
           onClick={() => click ? removeFromWishlistHandler(data) : addToWishlistHandler(data)}
-          className={`absolute top-3 right-3 z-[7) p-2 rounded-full backdrop-blur-sm transition-all duration-300 transform hover:scale-110 ${
+          className={`absolute top-3 right-3 z-[7] p-2 rounded-full backdrop-blur-sm transition-all duration-300 transform hover:scale-110 ${
             click 
               ? "bg-red-500/90 text-white shadow-lg" 
               : "bg-white/80 text-gray-600 hover:bg-white hover:text-red-500"
