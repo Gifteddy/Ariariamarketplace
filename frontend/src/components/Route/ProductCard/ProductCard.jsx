@@ -213,7 +213,7 @@ const ProductCard = ({ data, isEvent }) => {
               Only {data.stock} left
             </span>
           )}
-        </div>
+        </div> 
 
         {/* Add to Cart Button - Mobile */}
         {data.stock > 0 && (
