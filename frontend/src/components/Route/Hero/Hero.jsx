@@ -9,9 +9,9 @@ const Hero = () => {
 
   // Use direct image URLs or local imports
   const images = [
-    "https://pikaso.cdnpk.net/private/production/2737126217/asset.jpg?token=exp=1763942400~hmac=d774fc02e76e7666b66305a51ece25ef36a40c531d0f40948f335e2449b675e0",
-    "https://pikaso.cdnpk.net/private/production/2737129867/asset.jpg?token=exp=1763942400~hmac=d4b9ad5148ce3db5aeb198ae8e21b3594cb2dab54507b2313ca2b55f1614e446",
-    "https://pikaso.cdnpk.net/private/production/2737133428/asset.jpg?token=exp=1763942400~hmac=eeace9937348bd18ef34da7303788afccc60c71b9678466a170f43057566ba6d"
+    "https://plus.unsplash.com/premium_photo-1701173484286-51d89dd675c2?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://plus.unsplash.com/premium_photo-1700495937739-7861a541579c?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8c2hvcHBpbmclMjBhZnJpY2F8ZW58MHx8MHx8fDA%3D",
+    "https://plus.unsplash.com/premium_photo-1701173484472-b9c722126ce3?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8c2hvcHBpbmclMjBhZnJpY2F8ZW58MHx8MHx8fDA%3D"
   ];
 
   const headlines = [
