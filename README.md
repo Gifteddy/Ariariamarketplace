@@ -1,1 +1,1 @@
-@copyright by Abanaijamade 2024
+@copyright by Abanaijamade 2026
